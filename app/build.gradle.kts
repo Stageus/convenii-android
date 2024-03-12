@@ -67,5 +67,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.androidx.navigation)
-
+    //androidx-navigation-animation = { group = "com.google.accomanist", name = "accompanist-navigation-animation", version.ref = "animation" }
+    implementation(libs.androidx.navigation.animation)
 }

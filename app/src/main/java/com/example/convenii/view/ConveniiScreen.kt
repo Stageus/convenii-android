@@ -1,15 +1,18 @@
 package com.example.convenii.view
 
-import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.convenii.R
+import com.example.convenii.view.account.SignInScreen
 import com.example.convenii.view.account.StartScreen
 
-enum class ConveniiScreen(@StringRes val title: Int) {
-    Start(title = R.string.app_name),
+enum class ConveniiScreen() {
+    Start,
+    SignIn
+
 }
 
 @Composable
@@ -20,9 +23,28 @@ fun ConveniiApp(
         navController = navController,
         startDestination = ConveniiScreen.Start.name,
     ) {
+        composable(route = ConveniiScreen.Start.name) {
+            StartScreen(
+                navController = navController
+            )
+        }
 
-        composable(ConveniiScreen.Start.name) {
-            StartScreen()
+        composable(
+            route = ConveniiScreen.SignIn.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(400)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(400)
+                )
+            }
+        ) {
+            SignInScreen()
         }
     }
 }
