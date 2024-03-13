@@ -2,45 +2,62 @@
 
 package com.example.convenii.view.account
 
-import androidx.compose.foundation.BorderStroke
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
+import com.example.convenii.view.components.AccountInputField
+import com.example.convenii.view.components.ConfirmBtn
 
 @Composable
 fun SignInScreen(
+    viewModel: SignInViewModel = SignInViewModel()
 ) {
+    val email by viewModel.email.collectAsState()
+    val isEnabled by viewModel.isEnabled.collectAsState()
+    val isFirst = remember { mutableStateOf(true) }
+    val isError by viewModel.isError.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                ),
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        viewModel.setIsEnabled();
+                        isFirst.value = !isFirst.value
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_back),
                             contentDescription = null,
@@ -71,55 +88,76 @@ fun SignInScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(innerPadding)
         ) {
-            Text(
-                text = "Start Screen",
-                modifier = Modifier.align(Alignment.Center)
-            )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 32.dp)
+                    .align(Alignment.TopCenter)
+                    .padding(top = 60.dp)
             ) {
-                Button(
-                    onClick = { /*TODO*/ },
-                    shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.dp, Color(0xFFE6E8EB)),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = Color.Black,
-                        containerColor = Color.White
-                    ),
+                AccountInputField(
+                    keyboardOptions = KeyboardOptions.Default,
+                    isPassword = false,
+                    text = email,
+                    valueChange = { viewModel.setEmail(it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(52.dp)
-                        .padding(horizontal = 16.dp)
-
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_email),
-                        contentDescription = null,
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
+                        .padding(horizontal = 16.dp),
+                    placeholder = "이메일을 입력해주세요",
+                    isError = isError
+                )
+                Spacer(modifier = Modifier.padding(top = 16.dp))
+                AccountInputField(
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    isPassword = true,
+                    text = email,
+                    valueChange = { viewModel.setEmail(it) },
+                    placeholder = "비밀번호를 입력해주세요",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    isError = isError
+                )
+                //간격 최대
+                Spacer(modifier = Modifier.weight(1f))
+                ConfirmBtn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 24.dp)
+                        .navigationBarsPadding(),
+                    text = "로그인",
+                    enabled = isEnabled,
+                    onClick = {
+                        viewModel.setIsEnabled();
+                        viewModel.setIsError()
+                        Log.d("test", isEnabled.toString())
+                    }
+                )
+                if (isFirst.value) {
                     Text(
-                        text = "이메일로 로그인하기",
-                        style = TextStyle(
-                            fontSize = 18.sp
+                        text = "처음 이용하시나요?", style = TextStyle(
+                            fontSize = 12.sp,
+                            color = Color(0xFF646F7C),
+                            fontFamily = pretendard,
+                            fontWeight = FontWeight.Medium,
+                            textDecoration = TextDecoration.Underline
                         ),
-                        fontFamily = pretendard
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    )
+                } else {
+                    Text(
+                        text = "비밀번호를 잊으셨나요?", style = TextStyle(
+                            fontSize = 12.sp,
+                            color = Color(0xFF646F7C),
+                            fontFamily = pretendard,
+                            fontWeight = FontWeight.Medium,
+                            textDecoration = TextDecoration.Underline
+                        ),
+                        modifier = Modifier.padding(bottom = 24.dp)
                     )
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    text = "로그인없이",
-                    style = com.example.convenii.ui.theme.Typography.bodyLarge.merge(
-                        fontSize = 12.sp,
-                        color = Color(0xFF646F7C),
-                        textDecoration = TextDecoration.Underline
-                    ),
-                )
 
             }
         }

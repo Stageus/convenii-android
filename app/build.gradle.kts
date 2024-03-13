@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -69,4 +71,6 @@ dependencies {
     implementation(libs.androidx.navigation)
     //androidx-navigation-animation = { group = "com.google.accomanist", name = "accompanist-navigation-animation", version.ref = "animation" }
     implementation(libs.androidx.navigation.animation)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }

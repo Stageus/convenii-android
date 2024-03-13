@@ -18,6 +18,7 @@ enum class ConveniiScreen() {
 @Composable
 fun ConveniiApp(
 ) {
+
     val navController = rememberNavController()
     NavHost(
         navController = navController,
