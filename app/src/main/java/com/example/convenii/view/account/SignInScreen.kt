@@ -4,6 +4,7 @@ package com.example.convenii.view.account
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
@@ -41,7 +43,8 @@ import com.example.convenii.view.components.ConfirmBtn
 
 @Composable
 fun SignInScreen(
-    viewModel: SignInViewModel = SignInViewModel()
+    viewModel: SignInViewModel = SignInViewModel(),
+    navController: NavController
 ) {
     val email by viewModel.email.collectAsState()
     val isEnabled by viewModel.isEnabled.collectAsState()
@@ -144,7 +147,11 @@ fun SignInScreen(
                             fontWeight = FontWeight.Medium,
                             textDecoration = TextDecoration.Underline
                         ),
-                        modifier = Modifier.padding(bottom = 24.dp)
+                        modifier = Modifier
+                            .padding(bottom = 32.dp)
+                            .clickable {
+                                navController.navigate("Register1")
+                            }
                     )
                 } else {
                     Text(
@@ -155,7 +162,7 @@ fun SignInScreen(
                             fontWeight = FontWeight.Medium,
                             textDecoration = TextDecoration.Underline
                         ),
-                        modifier = Modifier.padding(bottom = 24.dp)
+                        modifier = Modifier.padding(bottom = 32.dp)
                     )
                 }
 
