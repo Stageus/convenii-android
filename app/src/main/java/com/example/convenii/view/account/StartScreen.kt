@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
+import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun StartScreen(
@@ -38,6 +40,12 @@ fun StartScreen(
         Text(
             text = "Start Screen",
             modifier = Modifier.align(Alignment.Center)
+        )
+        GlideImage(
+            imageModel = { R.drawable.test },
+            modifier = Modifier
+                .size(500.dp)
+                .align(Alignment.Center),
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

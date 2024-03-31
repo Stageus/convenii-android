@@ -1,8 +1,11 @@
 package com.example.convenii.view
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,6 +15,7 @@ import com.example.convenii.view.account.register.Register1Screen
 import com.example.convenii.view.account.register.Register2Screen
 import com.example.convenii.view.account.register.Register3Screen
 import com.example.convenii.view.account.register.Register4Screen
+import com.example.convenii.view.main.home.HomeScreen
 
 enum class ConveniiScreen() {
     Start,
@@ -20,7 +24,44 @@ enum class ConveniiScreen() {
     Register2,
     Register3,
     Register4,
+    Home
 
+}
+
+fun NavGraphBuilder.composableWithAnimation(
+    route: String,
+    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+) {
+    composable(
+        route = route,
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(400)
+            )
+
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(400)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(400)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(400)
+            )
+        },
+        content = content
+
+    )
 }
 
 @Composable
@@ -29,170 +70,44 @@ fun ConveniiApp(
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = ConveniiScreen.Start.name,
+        startDestination = ConveniiScreen.Home.name,
     ) {
         composable(route = ConveniiScreen.Start.name) {
             StartScreen(
                 navController = navController
             )
         }
-        composable(
-            route = ConveniiScreen.SignIn.name,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            }
-        ) {
+        composableWithAnimation(route = ConveniiScreen.SignIn.name) {
             SignInScreen(
                 navController = navController
             )
         }
-
-        composable(
-            route = ConveniiScreen.Register1.name,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            }
-        ) {
+        composableWithAnimation(route = ConveniiScreen.Register1.name) {
             Register1Screen(
                 navController = navController
             )
         }
 
-        composable(
-            route = ConveniiScreen.Register2.name,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            }
-        ) {
+        composableWithAnimation(route = ConveniiScreen.Register2.name) {
             Register2Screen(
                 navController = navController
             )
         }
 
-        composable(
-            route = ConveniiScreen.Register3.name,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            }
-        ) {
+        composableWithAnimation(route = ConveniiScreen.Register3.name) {
             Register3Screen(
                 navController = navController
             )
         }
 
-        composable(
-            route = ConveniiScreen.Register4.name,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(400)
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(400)
-                )
-            }
-        ) {
+        composableWithAnimation(route = ConveniiScreen.Register4.name) {
             Register4Screen(
                 navController = navController
+            )
+        }
+
+        composable(route = ConveniiScreen.Home.name) {
+            HomeScreen(
             )
         }
     }

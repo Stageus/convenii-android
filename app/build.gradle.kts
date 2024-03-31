@@ -73,4 +73,6 @@ dependencies {
     implementation(libs.androidx.navigation.animation)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.glide)
+
 }

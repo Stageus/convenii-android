@@ -5,9 +5,13 @@ package com.example.convenii.view.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -102,3 +106,19 @@ fun ConfirmBtn(
             modifier = Modifier.clickable { if (enabled) onClick() })
     }
 }
+
+@Composable
+fun MainCard() {
+    ElevatedCard(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp,
+        ),
+        modifier = Modifier//가로 꽉채
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(10.dp, 0.dp)
+    ) {
+
+    }
+}
+
