@@ -9,6 +9,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.convenii.R
 import com.example.convenii.view.account.SignInScreen
 import com.example.convenii.view.account.StartScreen
 import com.example.convenii.view.account.register.Register1Screen
@@ -17,14 +18,14 @@ import com.example.convenii.view.account.register.Register3Screen
 import com.example.convenii.view.account.register.Register4Screen
 import com.example.convenii.view.main.home.HomeScreen
 
-enum class ConveniiScreen() {
-    Start,
-    SignIn,
-    Register1,
-    Register2,
-    Register3,
-    Register4,
-    Home
+enum class ConveniiScreen(val route: String, val title: String, val icon: Int? = null) {
+    Start("start", "시작", R.drawable.icon_home),
+    SignIn("signIn", "로그인", R.drawable.icon_home),
+    Register1("register1", "회원가입", R.drawable.icon_home),
+    Register2("register2", "회원가입"),
+    Register3("register3", "회원가입"),
+    Register4("register4", "회원가입"),
+    Home("home", "홈", R.drawable.icon_home),
 
 }
 
@@ -108,6 +109,7 @@ fun ConveniiApp(
 
         composable(route = ConveniiScreen.Home.name) {
             HomeScreen(
+                navController = navController
             )
         }
     }

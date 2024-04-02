@@ -12,8 +12,8 @@ navigation = "2.7.7"
 animation = "0.34.0"
 hilt = "2.44"
 glide = "2.3.2"
-accompanist = "0.34.0"
-
+material3 = "1.2.1"
+material = "1.6.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,7 +35,8 @@ androidx-navigation-animation = { group = "com.google.accompanist", name = "acco
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 glide = { group = "com.github.skydoves", name = "landscapist-glide", version.ref = "glide" }
-
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+material = { group = "androidx.compose.material", name = "material", version.ref = "material" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

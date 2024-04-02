@@ -75,4 +75,6 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.glide)
 
+    implementation(libs.material)
+
 }

@@ -2,16 +2,23 @@
 
 package com.example.convenii.view.components
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -21,12 +28,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 
 @Composable
@@ -107,17 +118,132 @@ fun ConfirmBtn(
     }
 }
 
+
+@Preview
 @Composable
 fun MainCard() {
-    ElevatedCard(
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+
+            ),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp,
+            defaultElevation = 1.dp,
         ),
-        modifier = Modifier//가로 꽉채
+        border = BorderStroke(1.dp, Color(0xffE6E8EB)),
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
-            .padding(10.dp, 0.dp)
+            .height(160.dp)
+            .padding(20.dp, 0.dp)
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxHeight(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            //padding start 10%
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.04f)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.test), contentDescription = null,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .width(80.dp)
+                    .height(80.dp),
+                contentScale = ContentScale.FillBounds
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.054f)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(0.55f)
+
+            ) {
+                Text(
+                    text = "핫식스sdfsfsd",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = pretendard,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Text(
+                    modifier = Modifier.padding(top = 4.dp),
+                    text = "2200원",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontFamily = pretendard,
+                        fontWeight = FontWeight.Normal
+                    )
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            Column(
+                Modifier
+                    .padding(end = 20.dp, top = 20.dp)
+                    .align(Alignment.Top),
+
+                ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .width(25.dp)
+                            .height(25.dp),
+                        painter = painterResource(id = R.drawable.test),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = "1 + 1",
+                        modifier = Modifier.padding(start = 4.dp),
+                        style = TextStyle(fontSize = 12.sp, fontFamily = pretendard)
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .width(25.dp)
+                            .height(25.dp),
+                        painter = painterResource(id = R.drawable.test),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = "1 + 1",
+                        modifier = Modifier.padding(start = 4.dp),
+                        style = TextStyle(fontSize = 12.sp, fontFamily = pretendard)
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .width(25.dp)
+                            .height(25.dp),
+                        painter = painterResource(id = R.drawable.test),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = "1 + 1",
+                        modifier = Modifier.padding(start = 4.dp),
+                        style = TextStyle(fontSize = 12.sp, fontFamily = pretendard)
+                    )
+                }
+            }
+
+        }
 
     }
 }
