@@ -26,17 +26,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.R
-import com.example.convenii.ui.theme.ConveniiTheme
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
@@ -53,13 +49,11 @@ fun Register2Screen(
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
-
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_back),
                             contentDescription = null,
                         )
-
                     }
                 },
                 title = {
@@ -136,14 +130,21 @@ fun CustomStyledText(mail: String) {
         // 인증번호 발송 문구의 시작 부분
 
         // 'mail' 변수 값에 대한 스타일 적용
-        withStyle(style = SpanStyle(color = Color(0xff2D8DF4), fontWeight = FontWeight.Bold,
-            fontFamily = pretendard, fontSize = 20.sp)) {
+        withStyle(
+            style = SpanStyle(
+                color = Color(0xff2D8DF4), fontWeight = FontWeight.Bold,
+                fontFamily = pretendard, fontSize = 20.sp
+            )
+        ) {
             append(mail)
         }
 
         // 인증번호 발송 문구의 나머지 부분
-        withStyle(style = SpanStyle(color = Color.Black,
-           )) {
+        withStyle(
+            style = SpanStyle(
+                color = Color.Black,
+            )
+        ) {
             append("로 발송 된\n인증번호를 입력해주세요")
         }
     }
