@@ -73,7 +73,7 @@ fun ConveniiApp(
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = ConveniiScreen.ProductDetail.name,
+        startDestination = ConveniiScreen.Start.name,
     ) {
         composable(route = ConveniiScreen.Start.name) {
             StartScreen(

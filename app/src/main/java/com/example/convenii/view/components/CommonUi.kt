@@ -20,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -118,8 +119,6 @@ fun ConfirmBtn(
     }
 }
 
-
-@Preview
 @Composable
 fun MainCard() {
     Card(
@@ -242,9 +241,47 @@ fun MainCard() {
                     )
                 }
             }
+        }
+    }
+}
 
+@Composable
+fun CommentUi(nickname: String, star: Int, comment: String, date: String) {
+    Column {
+        Text(
+            text = nickname,
+            style = TextStyle(
+                fontSize = 12.sp,
+                fontFamily = pretendard,
+                fontWeight = FontWeight.Bold
+            )
+        )
+
+        Row {
+            for (i in 1..star) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_fill_star),
+                    contentDescription = null,
+                    tint = Color(0xffFFD643)
+                )
+            }
+
+            for (i in 1..(5 - star)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_empty_star),
+                    contentDescription = null,
+                    tint = Color(0xffFFD643)
+                    
+                )
+            }
         }
 
     }
+}
+
+@Preview
+@Composable
+fun PreviewTest() {
+    CommentUi(nickname = "홍길동", star = 3, comment = "test", date = "3일전")
 }
 

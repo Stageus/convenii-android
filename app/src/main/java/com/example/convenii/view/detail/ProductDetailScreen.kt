@@ -108,6 +108,7 @@ fun ProductDetailScreen(navController: NavController) {
             }
         }
 
+        //메인 컬럼
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -141,10 +142,11 @@ fun ProductDetailScreen(navController: NavController) {
                     tint = Color(0xffFFD643)
                 )
                 Text(
-                    text = "1 .5",
+                    text = "1.5",
                     fontSize = 16.sp,
                     fontFamily = pretendard,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(start = 5.dp, end = 10.dp)
                 )
             }
             Text(
@@ -192,8 +194,16 @@ fun ProductDetailScreen(navController: NavController) {
                 listOf("11월", "Cell 12-2", "Cell 12-3", "Cell 12-4"),
                 listOf("12월", "Cell 13-2", "Cell 13-3", "Cell 13-4"),
             )
-
             StaticDataTable(data = sampleData)
+
+            Spacer(modifier = Modifier.height(40.dp))
+            Text(
+                text = "리뷰 모두보기",
+                fontSize = 12.sp,
+                fontFamily = pretendard,
+                fontWeight = FontWeight.Normal,
+                color = Color(0xff7D8791)
+            )
 
         }
 

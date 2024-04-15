@@ -5,8 +5,24 @@
       <entry key="MainCard">
         <State />
       </entry>
-      <entry key="app">
+      <entry key="PreviewTest">
         <State />
+      </entry>
+      <entry key="app">
+        <State>
+          <runningDeviceTargetSelectedWithDropDown>
+            <Target>
+              <type value="RUNNING_DEVICE_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="SERIAL_NUMBER" />
+                  <value value="R3CN70B140V" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-04T18:29:00.030229Z" />
+        </State>
       </entry>
     </value>
   </component>
