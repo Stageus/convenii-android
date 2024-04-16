@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
+import com.example.convenii.view.components.CommentUi
+import com.example.convenii.view.components.ConfirmBtn
 
 @Composable
 fun ProductDetailScreen(navController: NavController) {
@@ -205,8 +207,39 @@ fun ProductDetailScreen(navController: NavController) {
                 color = Color(0xff7D8791)
             )
 
-        }
+            val sampleComment = List<CommentSampleData>(5) {
+                CommentSampleData(
+                    idx = it,
+                    productIdx = 1,
+                    nickname = "준혁이",
+                    content = "맛있어요",
+                    score = 5,
+                    created_at = "2021-09-01"
+                )
+            }
 
+            Column {
+                sampleComment.forEachIndexed { index, it ->
+                    if (index > 0) Spacer(modifier = Modifier.height(10.dp))
+                    CommentUi(
+                        nickname = it.nickname,
+                        star = it.score,
+                        comment = it.content,
+                        date = it.created_at
+                    )
+                }
+            }
+
+            ConfirmBtn(
+                text = "리뷰 남기기",
+                enabled = true,
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, bottom = 20.dp)
+            )
+
+        } // 메인 컬럼 끝
     }
 }
 
@@ -279,3 +312,18 @@ fun RowScope.TableCell(
         )
     }
 }
+
+//"idx": number,
+//			"productIdx": number,
+//			"nickname" : string,
+//			"content" : string,
+//			"score" : number,
+//			"created_at" : DATE
+data class CommentSampleData(
+    var idx: Int,
+    var productIdx: Int,
+    var nickname: String,
+    var content: String,
+    var score: Int,
+    var created_at: String
+)

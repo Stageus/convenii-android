@@ -257,12 +257,16 @@ fun CommentUi(nickname: String, star: Int, comment: String, date: String) {
             )
         )
 
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+
+        ) {
             for (i in 1..star) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_fill_star),
                     contentDescription = null,
-                    tint = Color(0xffFFD643)
+                    tint = Color(0xffFFD643),
+                    modifier = Modifier.height(12.dp)
                 )
             }
 
@@ -270,11 +274,32 @@ fun CommentUi(nickname: String, star: Int, comment: String, date: String) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_empty_star),
                     contentDescription = null,
-                    tint = Color(0xffFFD643)
-                    
+                    tint = Color(0xffFFD643),
+                    modifier = Modifier.height(12.dp)
+
                 )
             }
+
+            Text(
+                text = date,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    fontFamily = pretendard,
+                    fontWeight = FontWeight.Normal,
+                    color = Color(0xff7D8791)
+                ),
+                modifier = Modifier.padding(start = 4.dp)
+            )
         }
+
+        Text(
+            text = comment, style = TextStyle(
+                fontSize = 12.sp,
+                fontFamily = pretendard,
+                fontWeight = FontWeight.Normal,
+                color = Color(0xff7D8791)
+            )
+        )
 
     }
 }
@@ -282,6 +307,6 @@ fun CommentUi(nickname: String, star: Int, comment: String, date: String) {
 @Preview
 @Composable
 fun PreviewTest() {
-    CommentUi(nickname = "홍길동", star = 3, comment = "test", date = "3일전")
+//    ConfirmBtn(text = , enabled = , onClick = { /*TODO*/ }, modifier = )
 }
 
