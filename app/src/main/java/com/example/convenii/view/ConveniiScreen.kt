@@ -17,6 +17,7 @@ import com.example.convenii.view.account.register.Register2Screen
 import com.example.convenii.view.account.register.Register3Screen
 import com.example.convenii.view.account.register.Register4Screen
 import com.example.convenii.view.detail.ProductDetailScreen
+import com.example.convenii.view.detail.ReviewAddScreen
 import com.example.convenii.view.detail.ReviewDetailScreen
 import com.example.convenii.view.main.home.HomeScreen
 
@@ -30,6 +31,7 @@ enum class ConveniiScreen(val route: String, val title: String, val icon: Int? =
     Home("home", "홈", R.drawable.icon_home),
     ProductDetail("productDetail", "상품 상세"),
     ReviewDetail("reviewDetail", "리뷰 상세"),
+    ReviewAdd("reviewAdd", "리뷰 작성"),
 
 }
 
@@ -75,7 +77,7 @@ fun ConveniiApp(
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = ConveniiScreen.ReviewDetail.name,
+        startDestination = ConveniiScreen.Home.name,
     ) {
         composable(route = ConveniiScreen.Start.name) {
             StartScreen(
@@ -125,6 +127,12 @@ fun ConveniiApp(
 
         composable(route = ConveniiScreen.ReviewDetail.name) {
             ReviewDetailScreen(
+                navController = navController
+            )
+        }
+
+        composable(route = ConveniiScreen.ReviewAdd.name) {
+            ReviewAddScreen(
                 navController = navController
             )
         }

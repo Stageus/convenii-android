@@ -115,7 +115,7 @@ fun ConfirmBtn(
             fontSize = 18.sp,
             fontFamily = pretendard,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.clickable { if (enabled) onClick() })
+        )
     }
 }
 
@@ -134,7 +134,6 @@ fun MainCard() {
         modifier = Modifier
             .fillMaxWidth()
             .height(160.dp)
-            .padding(20.dp, 0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -259,7 +258,6 @@ fun CommentUi(nickname: String, star: Int, comment: String, date: String) {
 
         Row(
             verticalAlignment = Alignment.CenterVertically
-
         ) {
             for (i in 1..star) {
                 Icon(
