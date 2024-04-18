@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -24,14 +25,14 @@ import com.example.convenii.view.ConveniiScreen
 fun BottomNav(navController: NavController) {
     val items = listOf(
         ConveniiScreen.Home,
-        ConveniiScreen.Start,
-        ConveniiScreen.SignIn,
+        ConveniiScreen.SearchMain,
+        ConveniiScreen.ReviewAdd,
         ConveniiScreen.Register1,
     )
 
     val screenName = listOf(
         "홈",
-        "시작",
+        "검색",
         "로그인",
         "회원가입",
     )
@@ -57,7 +58,8 @@ fun BottomNav(navController: NavController) {
                         Spacer(modifier = Modifier.height(15.dp))
                         Icon(
                             painter = painterResource(id = screen.icon!!),
-                            contentDescription = null
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }

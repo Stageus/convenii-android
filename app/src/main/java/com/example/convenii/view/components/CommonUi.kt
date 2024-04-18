@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -184,11 +185,13 @@ fun MainCard() {
             Column(
                 Modifier
                     .padding(end = 20.dp, top = 20.dp)
-                    .align(Alignment.Top),
+                    .align(Alignment.Top)
+                    .fillMaxWidth()
 
-                ) {
+            ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.align(Alignment.End)
                 ) {
                     Image(
                         modifier = Modifier
@@ -206,7 +209,9 @@ fun MainCard() {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.align(Alignment.End)
+
                 ) {
                     Image(
                         modifier = Modifier
@@ -224,7 +229,9 @@ fun MainCard() {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.align(Alignment.End)
+
                 ) {
                     Image(
                         modifier = Modifier
@@ -239,6 +246,20 @@ fun MainCard() {
                         style = TextStyle(fontSize = 12.sp, fontFamily = pretendard)
                     )
                 }
+                Spacer(modifier = Modifier.weight(1f))
+
+                Row(
+                    modifier = Modifier.align(Alignment.End)
+
+
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_bookmark),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }

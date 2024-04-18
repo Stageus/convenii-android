@@ -72,9 +72,9 @@ dependencies {
     //androidx-navigation-animation = { group = "com.google.accomanist", name = "accompanist-navigation-animation", version.ref = "animation" }
     implementation(libs.androidx.navigation.animation)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
     implementation(libs.glide)
-
     implementation(libs.material)
 
 }

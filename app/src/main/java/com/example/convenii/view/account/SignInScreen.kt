@@ -35,6 +35,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
@@ -43,9 +44,10 @@ import com.example.convenii.view.components.ConfirmBtn
 
 @Composable
 fun SignInScreen(
-    viewModel: SignInViewModel = SignInViewModel(),
+    viewModel: SignInViewModel = hiltViewModel(),
     navController: NavController
 ) {
+
     val email by viewModel.email.collectAsState()
     val isEnabled by viewModel.isEnabled.collectAsState()
     val isFirst = remember { mutableStateOf(true) }

@@ -20,18 +20,20 @@ import com.example.convenii.view.detail.ProductDetailScreen
 import com.example.convenii.view.detail.ReviewAddScreen
 import com.example.convenii.view.detail.ReviewDetailScreen
 import com.example.convenii.view.main.home.HomeScreen
+import com.example.convenii.view.main.search.SearchMainScreen
 
 enum class ConveniiScreen(val route: String, val title: String, val icon: Int? = null) {
     Start("start", "시작", R.drawable.icon_home),
-    SignIn("signIn", "로그인", R.drawable.icon_home),
-    Register1("register1", "회원가입", R.drawable.icon_home),
+    SignIn("signIn", "로그인", R.drawable.icon_search),
+    Register1("register1", "회원가입", R.drawable.icon_profile),
     Register2("register2", "회원가입"),
     Register3("register3", "회원가입"),
     Register4("register4", "회원가입"),
-    Home("home", "홈", R.drawable.icon_home),
+    Home("home", "홈", R.drawable.icon_bookmark),
     ProductDetail("productDetail", "상품 상세"),
     ReviewDetail("reviewDetail", "리뷰 상세"),
-    ReviewAdd("reviewAdd", "리뷰 작성"),
+    ReviewAdd("reviewAdd", "리뷰 작성", R.drawable.icon_search),
+    SearchMain("searchMain", "검색", R.drawable.icon_search),
 
 }
 
@@ -77,7 +79,7 @@ fun ConveniiApp(
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = ConveniiScreen.Home.name,
+        startDestination = ConveniiScreen.Start.name,
     ) {
         composable(route = ConveniiScreen.Start.name) {
             StartScreen(
@@ -133,6 +135,12 @@ fun ConveniiApp(
 
         composable(route = ConveniiScreen.ReviewAdd.name) {
             ReviewAddScreen(
+                navController = navController
+            )
+        }
+
+        composable(route = ConveniiScreen.SearchMain.name) {
+            SearchMainScreen(
                 navController = navController
             )
         }

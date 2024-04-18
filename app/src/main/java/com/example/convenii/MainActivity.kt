@@ -8,6 +8,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.graphics.Color
 import com.example.convenii.ui.theme.ConveniiTheme
 import com.example.convenii.view.ConveniiApp
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -18,6 +19,7 @@ class MainApplication : Application() {
     }
 }
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
