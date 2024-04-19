@@ -76,5 +76,10 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.glide)
     implementation(libs.material)
+    implementation(libs.splash)
+
+    //retrofit2
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
 
 }

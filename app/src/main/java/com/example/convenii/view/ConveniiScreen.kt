@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -75,25 +76,34 @@ fun NavGraphBuilder.composableWithAnimation(
 
 @Composable
 fun ConveniiApp(
+    startDestination: String
 ) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = ConveniiScreen.Start.name,
+        startDestination = startDestination,
     ) {
         composable(route = ConveniiScreen.Start.name) {
             StartScreen(
                 navController = navController
             )
         }
-        composableWithAnimation(route = ConveniiScreen.SignIn.name) {
+        composableWithAnimation(route = ConveniiScreen.SignIn.name) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.Start.name)
+            }
             SignInScreen(
-                navController = navController
+                navController = navController,
+                parentEntry = parentEntry
             )
         }
-        composableWithAnimation(route = ConveniiScreen.Register1.name) {
+        composableWithAnimation(route = ConveniiScreen.Register1.name) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.Start.name)
+            }
             Register1Screen(
-                navController = navController
+                navController = navController,
+                parentEntry = parentEntry
             )
         }
 

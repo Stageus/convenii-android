@@ -17,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.ConveniiScreen
 
@@ -49,7 +48,7 @@ fun BottomNav(navController: NavController) {
                 selected = currentRoute == screen.name,
                 onClick = {
                     navController.navigate(screen.name) {
-                        popUpTo(navController.graph.findStartDestination().id)
+//                        popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true
                     }
                 },

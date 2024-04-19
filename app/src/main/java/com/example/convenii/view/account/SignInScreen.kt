@@ -2,7 +2,6 @@
 
 package com.example.convenii.view.account
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -36,17 +35,21 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
+import com.example.convenii.viewModel.SignInViewModel
 
 @Composable
 fun SignInScreen(
-    viewModel: SignInViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    parentEntry: NavBackStackEntry
+
 ) {
+    val viewModel: SignInViewModel = hiltViewModel(parentEntry)
 
     val email by viewModel.email.collectAsState()
     val isEnabled by viewModel.isEnabled.collectAsState()
@@ -135,9 +138,9 @@ fun SignInScreen(
                     text = "로그인",
                     enabled = isEnabled,
                     onClick = {
-                        viewModel.setIsEnabled();
-                        viewModel.setIsError()
-                        Log.d("test", isEnabled.toString())
+//                        viewModel.setIsEnabled();
+//                        viewModel.setIsError()
+                        viewModel.signIn(email, "t")
                     }
                 )
                 if (isFirst.value) {
@@ -152,6 +155,7 @@ fun SignInScreen(
                         modifier = Modifier
                             .padding(bottom = 32.dp)
                             .clickable {
+                                viewModel.setEmail("test")
                                 navController.navigate("Register1")
                             }
                     )

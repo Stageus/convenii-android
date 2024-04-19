@@ -2,6 +2,7 @@
 
 package com.example.convenii.view.account.register
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,16 +29,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
+import com.example.convenii.viewModel.SignInViewModel
 
 @Composable
 fun Register1Screen(
-    navController: NavController
+    navController: NavController,
+    parentEntry: NavBackStackEntry
 ) {
+    val viewModel: SignInViewModel = hiltViewModel(parentEntry)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -119,7 +125,8 @@ fun Register1Screen(
                     text = "다음으로",
                     enabled = true,
                     onClick = {
-                        navController.navigate("Register2")
+//                        navController.navigate("Register2")
+                        Log.d("test", viewModel.email.value)
 
                     }
                 )
