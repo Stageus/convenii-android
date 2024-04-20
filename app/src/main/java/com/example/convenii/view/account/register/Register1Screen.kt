@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.R
+import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
@@ -51,7 +52,7 @@ fun Register1Screen(
     val isEmailSend by viewModel.isEmailSend.collectAsState()
 
     LaunchedEffect(key1 = isEmailSend) {
-        if (isEmailSend) {
+        if (isEmailSend is APIResponse.Success) {
             navController.navigate("Register2")
             viewModel.resetIsEmailSend()
         }

@@ -3,6 +3,8 @@ package com.example.convenii.viewModel.account
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.convenii.model.APIResponse
+import com.example.convenii.model.account.RegisterData
 import com.example.convenii.repository.AccountRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +23,9 @@ class RegisterViewModel @Inject constructor(
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
 
-    private val _isEmailSend = MutableStateFlow(false)
-    val isEmailSend: StateFlow<Boolean> = _isEmailSend
+    private val _isEmailSend =
+        MutableStateFlow<APIResponse<RegisterData.VerifyEmailSendResponseBody>>(APIResponse.Empty())
+    val isEmailSend: StateFlow<APIResponse<RegisterData.VerifyEmailSendResponseBody>> = _isEmailSend
 
 
     fun checkIsItEmail(email: String) {
@@ -41,20 +44,13 @@ class RegisterViewModel @Inject constructor(
 
     fun verifyEmailSend(email: String) {
         viewModelScope.launch {
-            try {
-                val result = accountRepository.verifyEmailSend(email)
-                Log.d("RegisterViewModel", "verifyEmailSend: $result")
-                _isEmailSend.value = true
-                _email.value = email
-            } catch (e: Exception) {
-                Log.d("RegisterViewModel", "verifyEmailSend: ${e.message}")
-                _isEmailSend.value = false
-            }
+            _isEmailSend.value = accountRepository.verifyEmailSend(email)
+            if (isEmailSend.value is APIResponse.Success) _email.value = email
         }
     }
 
     fun resetIsEmailSend() {
-        _isEmailSend.value = false
+        _isEmailSend.value = APIResponse.Empty()
     }
 
     fun verifyEmailCheck(verificationCode: String) {

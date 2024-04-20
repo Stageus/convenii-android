@@ -3,6 +3,8 @@ package com.example.convenii.viewModel.account
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.convenii.model.APIResponse
+import com.example.convenii.model.account.SignInData
 import com.example.convenii.repository.AccountRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +25,10 @@ class SignInViewModel @Inject constructor(
     private val _isError = MutableStateFlow(false)
     val isError: StateFlow<Boolean> = _isError
 
+    private val _signInState: MutableStateFlow<APIResponse<SignInData.ResponseBody>> =
+        MutableStateFlow(APIResponse.Empty())
+    val signInState: StateFlow<APIResponse<SignInData.ResponseBody>> = _signInState
+
     fun setEmail(email: String) {
         _email.value = email
     }
@@ -38,15 +44,28 @@ class SignInViewModel @Inject constructor(
     fun signIn(email: String, pw: String) {
         val tmpEmail = "juneh2633@gmail.com"
         val tmpPw = "asdf1234@"
+        _signInState.value = APIResponse.Loading()
         viewModelScope.launch {
-            try {
-                val result = accountRepository.signIn(tmpEmail, tmpPw)
-                Log.d("SignInViewModel", "signIn: $result")
-                // 성공 처리, 결과에 따른 UI 업데이트
-            } catch (e: Exception) {
-                Log.d("SignInViewModel", "signIn: ${e.message}")
+            val result = accountRepository.signIn(tmpEmail, tmpPw)
+
+            if (result.data != null) {
+                _signInState.value = APIResponse.Success(data = result.data)
+                Log.d("SignInViewModel", _signInState.value.data!!.accessToken)
+            } else {
+                _signInState.value = APIResponse.Error(
+                    message = result.message!!,
+                    errorCode = result.errorCode!!
+                )
+                Log.d(
+                    "SignInViewModel", "${_signInState.value.message.toString()} errorCode: ${
+                        _signInState.value
+                            .errorCode
+                    }"
+                )
 
             }
+            // 성공 처리, 결과에 따른 UI 업데이트
+
         }
     }
 
