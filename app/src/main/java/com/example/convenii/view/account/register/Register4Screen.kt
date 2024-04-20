@@ -33,10 +33,12 @@ import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
+import com.example.convenii.viewModel.account.RegisterViewModel
 
 @Composable
 fun Register4Screen(
-    navController: NavController
+    navController: NavController,
+    viewModel: RegisterViewModel
 ) {
     Scaffold(
         topBar = {

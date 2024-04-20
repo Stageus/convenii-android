@@ -41,7 +41,7 @@ import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
-import com.example.convenii.viewModel.SignInViewModel
+import com.example.convenii.viewModel.account.SignInViewModel
 
 @Composable
 fun SignInScreen(

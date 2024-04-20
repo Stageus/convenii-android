@@ -1,4 +1,4 @@
-package com.example.convenii.viewModel
+package com.example.convenii.viewModel.account
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

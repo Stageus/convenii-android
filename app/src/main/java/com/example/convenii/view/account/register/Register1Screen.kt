@@ -2,7 +2,6 @@
 
 package com.example.convenii.view.account.register
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +19,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,21 +34,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
-import com.example.convenii.viewModel.SignInViewModel
+import com.example.convenii.viewModel.account.RegisterViewModel
 
 @Composable
 fun Register1Screen(
     navController: NavController,
-    parentEntry: NavBackStackEntry
+    viewModel: RegisterViewModel
 ) {
-    val viewModel: SignInViewModel = hiltViewModel(parentEntry)
+    var email by remember { mutableStateOf("") }
+    val isItEmail by viewModel.isItEmail.collectAsState()
+    val isEmailSend by viewModel.isEmailSend.collectAsState()
+
+    LaunchedEffect(key1 = isEmailSend) {
+        if (isEmailSend) {
+            navController.navigate("Register2")
+            viewModel.resetIsEmailSend()
+        }
+    }
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -106,13 +120,17 @@ fun Register1Screen(
                 AccountInputField(
                     keyboardOptions = KeyboardOptions.Default,
                     isPassword = false,
-                    text = "",
-                    valueChange = { },
+                    text = email,
+                    valueChange = {
+                        email = it
+                        viewModel.checkIsItEmail(it)
+
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 12.dp),
                     placeholder = "이메일을 입력해주세요",
-                    isError = false
+                    isError = !isItEmail
                 )
 
                 //간격 최대
@@ -123,10 +141,10 @@ fun Register1Screen(
                         .padding(bottom = 24.dp)
                         .navigationBarsPadding(),
                     text = "다음으로",
-                    enabled = true,
+                    enabled = isItEmail,
                     onClick = {
+                        viewModel.verifyEmailSend(email)
 //                        navController.navigate("Register2")
-                        Log.d("test", viewModel.email.value)
 
                     }
                 )

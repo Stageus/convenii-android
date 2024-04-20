@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -79,10 +80,14 @@ fun ConveniiApp(
     startDestination: String
 ) {
     val navController = rememberNavController()
+
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
+
+
         composable(route = ConveniiScreen.Start.name) {
             StartScreen(
                 navController = navController
@@ -103,25 +108,41 @@ fun ConveniiApp(
             }
             Register1Screen(
                 navController = navController,
-                parentEntry = parentEntry
+                viewModel = hiltViewModel(parentEntry)
             )
         }
 
-        composableWithAnimation(route = ConveniiScreen.Register2.name) {
+        composableWithAnimation(route = ConveniiScreen.Register2.name) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.Start.name)
+            }
             Register2Screen(
-                navController = navController
+                navController = navController,
+                viewModel = hiltViewModel(parentEntry)
+
             )
         }
 
-        composableWithAnimation(route = ConveniiScreen.Register3.name) {
+        composableWithAnimation(route = ConveniiScreen.Register3.name) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.Start.name)
+            }
+
             Register3Screen(
-                navController = navController
+                navController = navController,
+                viewModel = hiltViewModel(parentEntry)
+
             )
         }
 
-        composableWithAnimation(route = ConveniiScreen.Register4.name) {
+        composableWithAnimation(route = ConveniiScreen.Register4.name) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.Start.name)
+            }
             Register4Screen(
-                navController = navController
+                navController = navController,
+                viewModel = hiltViewModel(parentEntry)
+
             )
         }
 

@@ -19,6 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,11 +41,15 @@ import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
+import com.example.convenii.viewModel.account.RegisterViewModel
 
 @Composable
 fun Register2Screen(
-    navController: NavController
+    navController: NavController,
+    viewModel: RegisterViewModel
 ) {
+    val email by viewModel.email.collectAsState()
+    var code by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,13 +98,13 @@ fun Register2Screen(
                     .padding(top = 60.dp, start = 16.dp, end = 16.dp)
             ) {
 
-                CustomStyledText(mail = "test@test.com")
+                CustomStyledText(mail = email)
                 AccountInputField(
                     //숫자입력
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     isPassword = false,
-                    text = "",
-                    valueChange = { },
+                    text = code,
+                    valueChange = { code = it },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 30.dp),
@@ -111,10 +120,9 @@ fun Register2Screen(
                         .padding(bottom = 24.dp)
                         .navigationBarsPadding(),
                     text = "다음으로",
-                    enabled = true,
+                    enabled = if (code.length == 6) true else false,
                     onClick = {
-                        navController.navigate("Register3")
-
+                        viewModel.verifyEmailCheck(code)
                     }
                 )
 
