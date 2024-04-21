@@ -37,10 +37,7 @@ fun StartScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Text(
-            text = "Start Screen",
-            modifier = Modifier.align(Alignment.Center)
-        )
+        
         GlideImage(
             imageModel = { R.drawable.test },
             modifier = Modifier

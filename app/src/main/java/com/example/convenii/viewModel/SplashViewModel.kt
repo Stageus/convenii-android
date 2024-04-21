@@ -2,10 +2,15 @@ package com.example.convenii.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.convenii.repository.TokenRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SplashViewModel : ViewModel() {
+@HiltViewModel
+class SplashViewModel @Inject constructor(private val tokenRepository: TokenRepository) :
+    ViewModel() {
 
     private val _isReady = MutableStateFlow(false)
     val isReady: MutableStateFlow<Boolean> get() = _isReady
@@ -19,13 +24,13 @@ class SplashViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
+            _isToken.value = tokenRepository.checkToken()
             if (_isToken.value) {
                 _screen.value = "home"
             } else {
                 _screen.value = "start"
             }
             _isReady.value = true
-
         }
     }
 }

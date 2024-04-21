@@ -20,10 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.convenii.R
+import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
@@ -51,10 +55,20 @@ fun SignInScreen(
 ) {
     val viewModel: SignInViewModel = hiltViewModel(parentEntry)
 
-    val email by viewModel.email.collectAsState()
-    val isEnabled by viewModel.isEnabled.collectAsState()
-    val isFirst = remember { mutableStateOf(true) }
-    val isError by viewModel.isError.collectAsState()
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    val signInState by viewModel.signInState.collectAsState()
+
+    LaunchedEffect(key1 = signInState) {
+        if (signInState is APIResponse.Success) {
+            navController.navigate("home") {
+                popUpTo(navController.graph.id) {
+                    inclusive = true
+                }
+
+            }
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -63,8 +77,7 @@ fun SignInScreen(
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
-                        viewModel.setIsEnabled();
-                        isFirst.value = !isFirst.value
+                        navController.popBackStack()
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_back),
@@ -109,25 +122,41 @@ fun SignInScreen(
                     keyboardOptions = KeyboardOptions.Default,
                     isPassword = false,
                     text = email,
-                    valueChange = { viewModel.setEmail(it) },
+                    valueChange = { email = it },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     placeholder = "이메일을 입력해주세요",
-                    isError = isError
+                    isError = false
                 )
                 Spacer(modifier = Modifier.padding(top = 16.dp))
                 AccountInputField(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     isPassword = true,
-                    text = email,
-                    valueChange = { viewModel.setEmail(it) },
+                    text = password,
+                    valueChange = { password = it },
                     placeholder = "비밀번호를 입력해주세요",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    isError = isError
+                    isError = signInState is APIResponse.Error
                 )
+                if (signInState is APIResponse.Error) {
+                    Text(
+                        text = "비밀번호를 확인해주세요",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = pretendard,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Start,
+                            color = Color.Red
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp)
+                            .padding(start = 21.dp)
+                    )
+                }
                 //간격 최대
                 Spacer(modifier = Modifier.weight(1f))
                 ConfirmBtn(
@@ -136,14 +165,12 @@ fun SignInScreen(
                         .padding(start = 16.dp, end = 16.dp, bottom = 24.dp)
                         .navigationBarsPadding(),
                     text = "로그인",
-                    enabled = isEnabled,
+                    enabled = password.isNotEmpty(),
                     onClick = {
-//                        viewModel.setIsEnabled();
-//                        viewModel.setIsError()
-                        viewModel.signIn(email, "t")
+                        viewModel.signIn(email, password)
                     }
                 )
-                if (isFirst.value) {
+                if (signInState is APIResponse.Success || signInState is APIResponse.Empty) {
                     Text(
                         text = "처음 이용하시나요?", style = TextStyle(
                             fontSize = 12.sp,

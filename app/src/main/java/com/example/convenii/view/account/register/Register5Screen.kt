@@ -43,21 +43,25 @@ import com.example.convenii.view.components.ConfirmBtn
 import com.example.convenii.viewModel.account.RegisterViewModel
 
 @Composable
-fun Register1Screen(
+fun Register5Screen(
     navController: NavController,
     viewModel: RegisterViewModel
 ) {
-    var email by remember { mutableStateOf("") }
-    val isItEmail by viewModel.isItEmail.collectAsState()
-    val isEmailSend by viewModel.isEmailSend.collectAsState()
 
-    LaunchedEffect(key1 = isEmailSend) {
-        if (isEmailSend is APIResponse.Success) {
-            navController.navigate("Register2")
-            viewModel.resetIsEmailSend()
+    var nickname by remember { mutableStateOf("") }
+    val registerState by viewModel.registerState.collectAsState()
+
+    LaunchedEffect(key1 = registerState) {
+        if (registerState is APIResponse.Success) {
+            navController.navigate("home") {
+                popUpTo(navController.graph.id) {
+                    inclusive = true
+                }
+
+            }
         }
-    }
 
+    }
 
     Scaffold(
         topBar = {
@@ -68,7 +72,6 @@ fun Register1Screen(
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
-
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_back),
@@ -110,7 +113,7 @@ fun Register1Screen(
                     .padding(top = 60.dp, start = 16.dp, end = 16.dp)
             ) {
                 Text(
-                    text = "이메일",
+                    text = "닉네임",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = pretendard,
@@ -122,21 +125,19 @@ fun Register1Screen(
                 AccountInputField(
                     keyboardOptions = KeyboardOptions.Default,
                     isPassword = false,
-                    text = email,
+                    text = nickname,
                     valueChange = {
-                        email = it
-                        viewModel.checkIsItEmail(it)
-
+                        nickname = it
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 12.dp),
-                    placeholder = "이메일을 입력해주세요",
-                    isError = !isItEmail
+                    placeholder = "닉네임을 입력해주세요",
+                    isError = false
                 )
-                if (isEmailSend is APIResponse.Error && (isEmailSend as APIResponse.Error).errorCode == "401") {
+                if (registerState is APIResponse.Error && (registerState as APIResponse.Error).errorCode == "400") {
                     Text(
-                        text = "중복된 이메일입니다",
+                        text = "중복된 닉네임입니다",
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = pretendard,
@@ -158,18 +159,15 @@ fun Register1Screen(
                         .fillMaxWidth()
                         .padding(bottom = 24.dp)
                         .navigationBarsPadding(),
-                    text = "다음으로",
-                    enabled = isItEmail,
+                    text = "완료",
+                    enabled = nickname.isNotEmpty(),
                     onClick = {
-                        viewModel.verifyEmailSend(email)
-//                        navController.navigate("Register2")
+                        viewModel.register(nickname)
 
                     }
-                )
 
+                )
             }
         }
-
     }
-
 }

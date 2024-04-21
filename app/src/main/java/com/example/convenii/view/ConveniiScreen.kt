@@ -18,6 +18,7 @@ import com.example.convenii.view.account.register.Register1Screen
 import com.example.convenii.view.account.register.Register2Screen
 import com.example.convenii.view.account.register.Register3Screen
 import com.example.convenii.view.account.register.Register4Screen
+import com.example.convenii.view.account.register.Register5Screen
 import com.example.convenii.view.detail.ProductDetailScreen
 import com.example.convenii.view.detail.ReviewAddScreen
 import com.example.convenii.view.detail.ReviewDetailScreen
@@ -31,6 +32,7 @@ enum class ConveniiScreen(val route: String, val title: String, val icon: Int? =
     Register2("register2", "회원가입"),
     Register3("register3", "회원가입"),
     Register4("register4", "회원가입"),
+    Register5("register5", "회원가입"),
     Home("home", "홈", R.drawable.icon_bookmark),
     ProductDetail("productDetail", "상품 상세"),
     ReviewDetail("reviewDetail", "리뷰 상세"),
@@ -143,6 +145,16 @@ fun ConveniiApp(
                 navController = navController,
                 viewModel = hiltViewModel(parentEntry)
 
+            )
+        }
+
+        composableWithAnimation(route = ConveniiScreen.Register5.name) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.Start.name)
+            }
+            Register5Screen(
+                navController = navController,
+                viewModel = hiltViewModel(parentEntry)
             )
         }
 

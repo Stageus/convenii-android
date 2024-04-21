@@ -14,4 +14,14 @@ class RegisterData {
         val email: String,
         val verificationCode: String
     )
+
+    data class RegisterRequestBody(
+        val email: String,
+        val pw: String,
+        val nickname: String
+    )
+
+    data class RegisterResponseBody(
+        val accessToken: String
+    )
 }

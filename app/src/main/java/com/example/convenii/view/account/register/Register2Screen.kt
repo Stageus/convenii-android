@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.R
+import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
@@ -50,6 +52,14 @@ fun Register2Screen(
 ) {
     val email by viewModel.email.collectAsState()
     var code by remember { mutableStateOf("") }
+    val isEmailCheck by viewModel.isEmailCheck.collectAsState()
+
+    LaunchedEffect(key1 = isEmailCheck) {
+        if (isEmailCheck is APIResponse.Success) {
+            navController.navigate("Register3")
+            viewModel.resetIsEmailCheck()
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -58,6 +68,8 @@ fun Register2Screen(
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
+                        navController.popBackStack()
+
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_back),
@@ -109,7 +121,7 @@ fun Register2Screen(
                         .fillMaxWidth()
                         .padding(top = 30.dp),
                     placeholder = "인증번호",
-                    isError = false
+                    isError = isEmailCheck is APIResponse.Error,
                 )
 
                 //간격 최대

@@ -22,5 +22,9 @@ interface ApiService {
         @Body body: RegisterData.VerifyEmailCheckRequestBody
     ): retrofit2.Response<CommonResponseData.Response>
 
+    @POST("account")
+    suspend fun register(
+        @Body body: RegisterData.RegisterRequestBody
+    ): retrofit2.Response<RegisterData.RegisterResponseBody>
 
 }

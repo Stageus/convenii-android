@@ -19,6 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +45,11 @@ fun Register4Screen(
     navController: NavController,
     viewModel: RegisterViewModel
 ) {
+
+    val pw by viewModel.pw.collectAsState()
+    var checkPw by remember { mutableStateOf("") }
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,6 +58,7 @@ fun Register4Screen(
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
+                        navController.popBackStack()
 
                     }) {
                         Icon(
@@ -101,9 +112,11 @@ fun Register4Screen(
                 )
                 AccountInputField(
                     keyboardOptions = KeyboardOptions.Default,
-                    isPassword = false,
-                    text = "",
-                    valueChange = { },
+                    isPassword = true,
+                    text = checkPw,
+                    valueChange = {
+                        checkPw = it
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 12.dp),
@@ -119,9 +132,11 @@ fun Register4Screen(
                         .padding(bottom = 24.dp)
                         .navigationBarsPadding(),
                     text = "다음으로",
-                    enabled = true,
+                    enabled = pw == checkPw,
                     onClick = {
+                        navController.navigate("register5")
                     }
+
                 )
             }
         }

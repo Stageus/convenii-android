@@ -16,11 +16,18 @@ interface RemoteDataSource {
         email: String,
         verificationCode: String
     ): Response<CommonResponseData.Response>
+
+    suspend fun register(
+        email: String,
+        pw: String,
+        nickname: String
+    ): Response<RegisterData.RegisterResponseBody>
 }
 
 
 class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiService) :
     RemoteDataSource {
+    // account -------------------------------------
     override suspend fun signIn(email: String, pw: String): Response<SignInData.ResponseBody> {
         val requestBody = SignInData.RequestBody(email = email, pw = pw)
         return apiService.signIn(requestBody)
@@ -40,5 +47,18 @@ class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiServic
             verificationCode = verificationCode
         )
         return apiService.verifyEmailCheck(requestBody)
+    }
+
+    override suspend fun register(
+        email: String,
+        pw: String,
+        nickname: String
+    ): Response<RegisterData.RegisterResponseBody> {
+        val requestBody = RegisterData.RegisterRequestBody(
+            email = email,
+            pw = pw,
+            nickname = nickname
+        )
+        return apiService.register(requestBody)
     }
 }

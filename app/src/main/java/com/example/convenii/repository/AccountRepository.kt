@@ -1,5 +1,6 @@
 package com.example.convenii.repository
 
+import android.util.Log
 import com.example.convenii.dataSource.RemoteDataSource
 import com.example.convenii.model.APIResponse
 import com.example.convenii.model.CommonResponseData
@@ -14,6 +15,12 @@ interface AccountRepository {
         email: String,
         verificationCode: String
     ): APIResponse<CommonResponseData.Response>
+
+    suspend fun register(
+        email: String,
+        pw: String,
+        nickname: String
+    ): APIResponse<RegisterData.RegisterResponseBody>
 }
 
 class AccountRepositoryImpl(
@@ -43,6 +50,7 @@ class AccountRepositoryImpl(
     override suspend fun verifyEmailSend(email: String): APIResponse<RegisterData.VerifyEmailSendResponseBody> {
         try {
             val response = remoteDataSource.verifyEmailSend(email)
+            Log.d("AccountRepositoryImpl", response.code().toString())
             return if (response.isSuccessful) {
                 APIResponse.Success(data = response.body())
             } else {
@@ -87,6 +95,32 @@ class AccountRepositoryImpl(
         }
     }
 
+
+    override suspend fun register(
+        email: String,
+        pw: String,
+        nickname: String
+    ): APIResponse<RegisterData.RegisterResponseBody> {
+        try {
+            val response = remoteDataSource.register(email, pw, nickname)
+            return if (response.isSuccessful) {
+                APIResponse.Success(data = response.body())
+            } else {
+                APIResponse.Error(
+                    message = "message: ${
+                        response.errorBody()!!.string()
+                    }",
+                    errorCode = response.code().toString()
+                )
+            }
+        } catch (e: Exception) {
+            // 로그 기록, 오류 메시지를 UI로 전달, 또는 특정 오류 처리
+            return APIResponse.Error(
+                message = "Register failed: ${e.message}",
+                errorCode = "500"
+            )
+        }
+    }
 
 }
 

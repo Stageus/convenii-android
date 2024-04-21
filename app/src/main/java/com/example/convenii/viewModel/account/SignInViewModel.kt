@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.convenii.model.APIResponse
 import com.example.convenii.model.account.SignInData
 import com.example.convenii.repository.AccountRepository
+import com.example.convenii.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val tokenRepository: TokenRepository
 ) : ViewModel() {
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
@@ -42,30 +44,23 @@ class SignInViewModel @Inject constructor(
     }
 
     fun signIn(email: String, pw: String) {
-        val tmpEmail = "juneh2633@gmail.com"
-        val tmpPw = "asdf1234@"
-        _signInState.value = APIResponse.Loading()
         viewModelScope.launch {
-            val result = accountRepository.signIn(tmpEmail, tmpPw)
-
-            if (result.data != null) {
-                _signInState.value = APIResponse.Success(data = result.data)
-                Log.d("SignInViewModel", _signInState.value.data!!.accessToken)
+            _signInState.value = accountRepository.signIn(email, pw)
+            if (_signInState.value is APIResponse.Success) {
+                val token = SignInData.TokenData(
+                    (_signInState.value as APIResponse.Success).data!!.accessToken
+                )
+                tokenRepository.saveToken(token)
             } else {
-                _signInState.value = APIResponse.Error(
-                    message = result.message!!,
-                    errorCode = result.errorCode!!
+                Log.d(
+                    "SignInViewModel",
+                    (_signInState.value as APIResponse.Error).message.toString()
                 )
                 Log.d(
-                    "SignInViewModel", "${_signInState.value.message.toString()} errorCode: ${
-                        _signInState.value
-                            .errorCode
-                    }"
+                    "SignInViewModel",
+                    (_signInState.value as APIResponse.Error).errorCode.toString()
                 )
-
             }
-            // 성공 처리, 결과에 따른 UI 업데이트
-
         }
     }
 

@@ -121,7 +121,14 @@ fun ConfirmBtn(
 }
 
 @Composable
-fun MainCard() {
+fun MainCard(
+//    name: String,
+//    price: String,
+//    score: Int,
+//    createdAt: String,
+//    bookmarked: Boolean,
+//    eventHistory: ProductData.EventHistoryData
+) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
@@ -164,7 +171,7 @@ fun MainCard() {
 
             ) {
                 Text(
-                    text = "핫식스sdfsfsd",
+                    text = "name",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = pretendard,
@@ -173,7 +180,7 @@ fun MainCard() {
                 )
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
-                    text = "2200원",
+                    text = "${"price"}원",
                     style = TextStyle(
                         fontSize = 12.sp,
                         fontFamily = pretendard,

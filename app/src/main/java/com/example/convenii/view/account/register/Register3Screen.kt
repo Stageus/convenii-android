@@ -19,12 +19,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,11 +42,16 @@ import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
 import com.example.convenii.viewModel.account.RegisterViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Register3Screen(
     navController: NavController,
     viewModel: RegisterViewModel
 ) {
+    var password by remember { mutableStateOf("") }
+    val isValidPw by viewModel.isValidPw.collectAsState()
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,6 +60,7 @@ fun Register3Screen(
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
+                        navController.popBackStack()
 
                     }) {
                         Icon(
@@ -100,10 +113,15 @@ fun Register3Screen(
                     modifier = Modifier.fillMaxWidth()
                 )
                 AccountInputField(
-                    keyboardOptions = KeyboardOptions.Default,
-                    isPassword = false,
-                    text = "",
-                    valueChange = { },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                    ),
+                    isPassword = true,
+                    text = password,
+                    valueChange = {
+                        password = it
+                        viewModel.checkIsValidPw(it)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 12.dp),
@@ -119,8 +137,9 @@ fun Register3Screen(
                         .padding(bottom = 24.dp)
                         .navigationBarsPadding(),
                     text = "다음으로",
-                    enabled = true,
+                    enabled = isValidPw,
                     onClick = {
+                        viewModel.setPw(password)
                         navController.navigate("Register4")
                     }
                 )

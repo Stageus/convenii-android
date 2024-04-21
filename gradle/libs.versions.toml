@@ -17,6 +17,7 @@ material3 = "1.2.1"
 material = "1.6.4"
 splash = "1.0.0-beta02"
 retrofit = "2.11.0"
+dataStore = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +45,8 @@ material = { group = "androidx.compose.material", name = "material", version.ref
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+#dataStore
+dataStore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
 
 
 [plugins]

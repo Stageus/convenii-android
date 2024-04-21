@@ -82,4 +82,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
 
+    //datastore
+    implementation(libs.dataStore)
+
 }
