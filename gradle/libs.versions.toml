@@ -15,7 +15,7 @@ hiltCompose = "1.2.0"
 glide = "2.3.2"
 material3 = "1.2.1"
 material = "1.6.4"
-splash = "1.0.0-beta02"
+splash = "1.0.1"
 retrofit = "2.11.0"
 dataStore = "1.1.0"
 

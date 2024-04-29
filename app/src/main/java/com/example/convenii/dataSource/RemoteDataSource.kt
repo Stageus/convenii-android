@@ -3,6 +3,7 @@ package com.example.convenii.dataSource
 import com.example.convenii.model.CommonResponseData
 import com.example.convenii.model.account.RegisterData
 import com.example.convenii.model.account.SignInData
+import com.example.convenii.model.main.ProductData
 import com.example.convenii.service.ApiService
 import retrofit2.Response
 import javax.inject.Inject
@@ -22,6 +23,13 @@ interface RemoteDataSource {
         pw: String,
         nickname: String
     ): Response<RegisterData.RegisterResponseBody>
+
+    //main -------------------------------------
+    suspend fun getProductCompany(
+        companyIdx: Int,
+        page: Int,
+        option: String
+    ): Response<ProductData.ProductCompanyResponseData>
 }
 
 
@@ -60,5 +68,14 @@ class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiServic
             nickname = nickname
         )
         return apiService.register(requestBody)
+    }
+
+    //main -------------------------------------
+    override suspend fun getProductCompany(
+        companyIdx: Int,
+        page: Int,
+        option: String
+    ): Response<ProductData.ProductCompanyResponseData> {
+        return apiService.getProductCompany(companyIdx, page, option)
     }
 }

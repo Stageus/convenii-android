@@ -33,7 +33,7 @@ enum class ConveniiScreen(val route: String, val title: String, val icon: Int? =
     Register3("register3", "회원가입"),
     Register4("register4", "회원가입"),
     Register5("register5", "회원가입"),
-    Home("home", "홈", R.drawable.icon_bookmark),
+    Home("home", "홈", R.drawable.icon_home),
     ProductDetail("productDetail", "상품 상세"),
     ReviewDetail("reviewDetail", "리뷰 상세"),
     ReviewAdd("reviewAdd", "리뷰 작성", R.drawable.icon_search),
@@ -158,9 +158,13 @@ fun ConveniiApp(
             )
         }
 
-        composable(route = ConveniiScreen.Home.name) {
+        composable(route = ConveniiScreen.Home.name) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.Home.name)
+            }
             HomeScreen(
-                navController = navController
+                navController = navController,
+                viewModel = hiltViewModel(parentEntry)
             )
         }
 
