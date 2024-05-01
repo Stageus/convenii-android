@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.convenii.model.APIResponse
 import com.example.convenii.model.CommonResponseData
-import com.example.convenii.model.account.RegisterData
-import com.example.convenii.model.account.SignInData
+import com.example.convenii.model.account.RegisterModel
+import com.example.convenii.model.account.SignInModel
 import com.example.convenii.repository.AccountRepository
 import com.example.convenii.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,8 +28,9 @@ class RegisterViewModel @Inject constructor(
     val email: StateFlow<String> = _email
 
     private val _isEmailSend =
-        MutableStateFlow<APIResponse<RegisterData.VerifyEmailSendResponseBody>>(APIResponse.Empty())
-    val isEmailSend: StateFlow<APIResponse<RegisterData.VerifyEmailSendResponseBody>> = _isEmailSend
+        MutableStateFlow<APIResponse<RegisterModel.VerifyEmailSendResponseBody>>(APIResponse.Empty())
+    val isEmailSend: StateFlow<APIResponse<RegisterModel.VerifyEmailSendResponseBody>> =
+        _isEmailSend
 
     private val _isEmailCheck =
         MutableStateFlow<APIResponse<CommonResponseData.Response>>(APIResponse.Empty())
@@ -42,8 +43,8 @@ class RegisterViewModel @Inject constructor(
     val pw: StateFlow<String> = _pw
 
     private val _registerState =
-        MutableStateFlow<APIResponse<RegisterData.RegisterResponseBody>>(APIResponse.Empty())
-    val registerState: StateFlow<APIResponse<RegisterData.RegisterResponseBody>> = _registerState
+        MutableStateFlow<APIResponse<RegisterModel.RegisterResponseBody>>(APIResponse.Empty())
+    val registerState: StateFlow<APIResponse<RegisterModel.RegisterResponseBody>> = _registerState
 
 
     fun checkIsItEmail(email: String) {
@@ -99,7 +100,7 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             _registerState.value = accountRepository.register(email.value, pw.value, nickname)
             if (registerState.value is APIResponse.Success) {
-                val token = SignInData.TokenData(
+                val token = SignInModel.TokenData(
                     (registerState.value as APIResponse.Success).data!!.accessToken
                 )
                 tokenRepository.saveToken(token)

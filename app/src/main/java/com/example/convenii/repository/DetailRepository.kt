@@ -2,27 +2,23 @@ package com.example.convenii.repository
 
 import com.example.convenii.dataSource.RemoteDataSource
 import com.example.convenii.model.APIResponse
-import com.example.convenii.model.main.ProductModel
+import com.example.convenii.model.detail.ProductDetailModel
 
 
-interface MainRepository {
-    suspend fun getProductCompany(
-        companyIdx: Int,
-        page: Int,
-        option: String
-    ): APIResponse<ProductModel.ProductCompanyResponseData>
+interface DetailRepository {
+    suspend fun getDetailProduct(
+        productIdx: Int
+    ): APIResponse<ProductDetailModel.ProductDetailResponseData>
 }
 
-class MainRepositoryImpl(
+class DetailRepositoryImpl(
     private val remoteDataSource: RemoteDataSource
-) : MainRepository {
-    override suspend fun getProductCompany(
-        companyIdx: Int,
-        page: Int,
-        option: String
-    ): APIResponse<ProductModel.ProductCompanyResponseData> {
+) : DetailRepository {
+    override suspend fun getDetailProduct(
+        productIdx: Int
+    ): APIResponse<ProductDetailModel.ProductDetailResponseData> {
         try {
-            val response = remoteDataSource.getProductCompany(companyIdx, page, option)
+            val response = remoteDataSource.getProductDetail(productIdx)
             return if (response.isSuccessful) {
                 APIResponse.Success(data = response.body())
             } else {
@@ -35,7 +31,7 @@ class MainRepositoryImpl(
             }
         } catch (e: Exception) {
             return APIResponse.Error(
-                message = "Get product company failed: ${e.message}",
+                message = "Get product detail failed: ${e.message}",
                 errorCode = "500"
             )
         }

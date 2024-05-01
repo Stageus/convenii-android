@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.convenii.R
-import com.example.convenii.model.main.ProductData
+import com.example.convenii.model.main.ProductModel
 import com.example.convenii.ui.theme.pretendard
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -131,7 +131,7 @@ fun MainCard(
     name: String,
     price: String,
     bookmarked: Boolean,
-    events: List<ProductData.EventData>,
+    events: List<ProductModel.EventData>,
     clickEvent: () -> Unit,
     productImg: String,
 ) {

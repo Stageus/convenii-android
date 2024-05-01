@@ -115,11 +115,11 @@ fun HomeScreen(
                     }
 
                     1 -> {
-                        Text(text = "CU")
+                        CUHomeScreen(navController = navController, viewModel = viewModel)
                     }
 
                     2 -> {
-                        Text(text = "e-mart")
+                        EMartHomeScreen(navController = navController, viewModel = viewModel)
                     }
                 }
 

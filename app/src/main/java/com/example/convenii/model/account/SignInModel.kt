@@ -1,7 +1,7 @@
 package com.example.convenii.model.account
 
 
-class SignInData {
+class SignInModel {
     data class RequestBody(
         val email: String,
         val pw: String

@@ -57,7 +57,6 @@ fun Register5Screen(
                 popUpTo(navController.graph.id) {
                     inclusive = true
                 }
-
             }
         }
 

@@ -1,6 +1,6 @@
 package com.example.convenii.model.account
 
-class RegisterData {
+class RegisterModel {
 
     data class VerifyEmailSendRequestBody(
         val email: String

@@ -1,5 +1,6 @@
 package com.example.convenii.view.main.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -12,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,44 +24,18 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
-import com.example.convenii.view.components.CustomConfirmDialog
 import com.example.convenii.view.components.MainCard
 import com.example.convenii.viewModel.main.home.HomeViewModel
 
 @Composable
-fun GSHomeScreen(
+fun EMartHomeScreen(
     navController: NavController,
     viewModel: HomeViewModel
 ) {
-    val homeGSData = viewModel.homeGSData.collectAsState()
-    val authStatus = viewModel.authStatus.collectAsState()
+    val homeEMartData = viewModel.homeEMartData.collectAsState()
 
     LaunchedEffect(true) {
-        viewModel.getHomeProductCompanyData(1)
-    }
-
-    val showExpiredDialog = remember { mutableStateOf(false) }
-
-    LaunchedEffect(authStatus.value) {
-        showExpiredDialog.value = authStatus.value == "expired"
-    }
-
-    if (showExpiredDialog.value) {
-        CustomConfirmDialog(
-            onDismissRequest = {
-
-                viewModel.deleteToken()
-                showExpiredDialog.value = false
-                navController.navigate("start") {
-                    popUpTo(navController.graph.id) {
-                        inclusive = true
-                    }
-                }
-            },
-            mainTitle = "로그인 정보가 만료되었습니다",
-            subTitle = "다시 로그인해주세요",
-            btnText = "확인"
-        )
+        viewModel.getHomeProductCompanyData(3)
     }
 
     Column(
@@ -72,19 +46,23 @@ fun GSHomeScreen(
             .padding(horizontal = 20.dp)
 
     ) {
-        if (homeGSData.value is APIResponse.Success) {
+        if (homeEMartData.value is APIResponse.Success) {
 
             for (i in 0 until 3) {
                 if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
                 MainCard(
-                    name = homeGSData.value.data!!.data.productList[i].name,
-                    price = homeGSData.value.data!!.data.productList[i].price,
-                    bookmarked = homeGSData.value.data!!.data.productList[i].bookmarked,
-                    events = homeGSData.value.data!!.data.productList[i].events,
+                    name = homeEMartData.value.data!!.data.productList[i].name,
+                    price = homeEMartData.value.data!!.data.productList[i].price,
+                    bookmarked = homeEMartData.value.data!!.data.productList[i].bookmarked,
+                    events = homeEMartData.value.data!!.data.productList[i].events,
                     clickEvent = {
-                        navController.navigate("productDetail/${homeGSData.value.data!!.data.productList[i].idx}")
+                        Log.d(
+                            "GSHomeScreen",
+                            homeEMartData.value.data!!.data.productList[i].events.toString()
+                        )
+                        // TODO
                     },
-                    productImg = homeGSData.value.data!!.data.productList[i].productImg,
+                    productImg = homeEMartData.value.data!!.data.productList[i].productImg,
                 )
             }
         }
@@ -102,7 +80,7 @@ fun GSHomeScreen(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) {
-                    navController.navigate("more/1")
+                    navController.navigate("more/3")
                 },
             textAlign = TextAlign.End
         )

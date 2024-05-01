@@ -4,13 +4,13 @@ import android.util.Log
 import com.example.convenii.dataSource.RemoteDataSource
 import com.example.convenii.model.APIResponse
 import com.example.convenii.model.CommonResponseData
-import com.example.convenii.model.account.RegisterData
-import com.example.convenii.model.account.SignInData
+import com.example.convenii.model.account.RegisterModel
+import com.example.convenii.model.account.SignInModel
 
 
 interface AccountRepository {
-    suspend fun signIn(email: String, pw: String): APIResponse<SignInData.ResponseBody>
-    suspend fun verifyEmailSend(email: String): APIResponse<RegisterData.VerifyEmailSendResponseBody>
+    suspend fun signIn(email: String, pw: String): APIResponse<SignInModel.ResponseBody>
+    suspend fun verifyEmailSend(email: String): APIResponse<RegisterModel.VerifyEmailSendResponseBody>
     suspend fun verifyEmailCheck(
         email: String,
         verificationCode: String
@@ -20,13 +20,13 @@ interface AccountRepository {
         email: String,
         pw: String,
         nickname: String
-    ): APIResponse<RegisterData.RegisterResponseBody>
+    ): APIResponse<RegisterModel.RegisterResponseBody>
 }
 
 class AccountRepositoryImpl(
     private val remoteDataSource: RemoteDataSource
 ) : AccountRepository {
-    override suspend fun signIn(email: String, pw: String): APIResponse<SignInData.ResponseBody> {
+    override suspend fun signIn(email: String, pw: String): APIResponse<SignInModel.ResponseBody> {
         try {
             val response = remoteDataSource.signIn(email, pw)
             return if (response.isSuccessful) {
@@ -47,7 +47,7 @@ class AccountRepositoryImpl(
         }
     }
 
-    override suspend fun verifyEmailSend(email: String): APIResponse<RegisterData.VerifyEmailSendResponseBody> {
+    override suspend fun verifyEmailSend(email: String): APIResponse<RegisterModel.VerifyEmailSendResponseBody> {
         try {
             val response = remoteDataSource.verifyEmailSend(email)
             Log.d("AccountRepositoryImpl", response.code().toString())
@@ -100,7 +100,7 @@ class AccountRepositoryImpl(
         email: String,
         pw: String,
         nickname: String
-    ): APIResponse<RegisterData.RegisterResponseBody> {
+    ): APIResponse<RegisterModel.RegisterResponseBody> {
         try {
             val response = remoteDataSource.register(email, pw, nickname)
             return if (response.isSuccessful) {

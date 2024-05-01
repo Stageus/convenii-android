@@ -2,15 +2,20 @@ package com.example.convenii.view
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.convenii.R
 import com.example.convenii.view.account.SignInScreen
 import com.example.convenii.view.account.StartScreen
@@ -23,6 +28,8 @@ import com.example.convenii.view.detail.ProductDetailScreen
 import com.example.convenii.view.detail.ReviewAddScreen
 import com.example.convenii.view.detail.ReviewDetailScreen
 import com.example.convenii.view.main.home.HomeScreen
+import com.example.convenii.view.main.home.MoreGSScreen
+import com.example.convenii.view.main.home.MoreScreen
 import com.example.convenii.view.main.search.SearchMainScreen
 
 enum class ConveniiScreen(val route: String, val title: String, val icon: Int? = null) {
@@ -34,10 +41,12 @@ enum class ConveniiScreen(val route: String, val title: String, val icon: Int? =
     Register4("register4", "회원가입"),
     Register5("register5", "회원가입"),
     Home("home", "홈", R.drawable.icon_home),
-    ProductDetail("productDetail", "상품 상세"),
+    ProductDetail("productDetail/{productIdx}", "상품 상세"),
     ReviewDetail("reviewDetail", "리뷰 상세"),
     ReviewAdd("reviewAdd", "리뷰 작성", R.drawable.icon_search),
     SearchMain("searchMain", "검색", R.drawable.icon_search),
+    MoreGS("moreGS", "더보기"),
+    More("more/{type}", "더보기"),
 
 }
 
@@ -87,12 +96,19 @@ fun ConveniiApp(
     NavHost(
         navController = navController,
         startDestination = startDestination,
+        enterTransition = { slideInVertically(initialOffsetY = { 500 }) },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None }
     ) {
 
 
-        composable(route = ConveniiScreen.Start.name) {
+        composableWithAnimation(route = ConveniiScreen.Start.name) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.Start.name)
+            }
             StartScreen(
-                navController = navController
+                navController = navController,
             )
         }
         composableWithAnimation(route = ConveniiScreen.SignIn.name) { backStackEntry ->
@@ -168,9 +184,14 @@ fun ConveniiApp(
             )
         }
 
-        composable(route = ConveniiScreen.ProductDetail.name) {
+        composable(
+            route = ConveniiScreen.ProductDetail.route,
+            arguments = listOf(navArgument("productIdx") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productIdx = backStackEntry.arguments?.getString("productIdx")
             ProductDetailScreen(
-                navController = navController
+                navController = navController,
+                productIdx = productIdx
             )
         }
 
@@ -189,6 +210,23 @@ fun ConveniiApp(
         composable(route = ConveniiScreen.SearchMain.name) {
             SearchMainScreen(
                 navController = navController
+            )
+        }
+
+        composable(route = ConveniiScreen.MoreGS.name) {
+            MoreGSScreen(
+                navController = navController,
+            )
+        }
+
+        composable(
+            route = ConveniiScreen.More.route,
+            arguments = listOf(navArgument("type") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type")
+            MoreScreen(
+                navController = navController,
+                type = type
             )
         }
     }

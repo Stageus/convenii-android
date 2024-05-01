@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -31,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
+import com.example.convenii.view.components.CustomConfirmDialog
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
@@ -42,11 +42,14 @@ fun StartScreen(
 
     when {
         openAlertDialog.value -> {
-            AlertDialog(onDismissRequest = {
-                openAlertDialog.value = false
-            }, confirmButton = { /*TODO*/ })
-
-            // Show AlertDialog
+            CustomConfirmDialog(
+                onDismissRequest = {
+                    openAlertDialog.value = false
+                },
+                mainTitle = "준혁이바보",
+                subTitle = "준혁이 매우바보",
+                btnText = "확인"
+            )
         }
     }
     Box(

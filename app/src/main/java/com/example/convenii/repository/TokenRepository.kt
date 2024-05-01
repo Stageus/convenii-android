@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.convenii.model.account.SignInData
+import com.example.convenii.model.account.SignInModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -17,7 +17,7 @@ class TokenRepository @Inject constructor(private val dataStore: DataStore<Prefe
         val ACCESS_TOKEN = stringPreferencesKey("access_token")
     }
 
-    suspend fun saveToken(token: SignInData.TokenData) {
+    suspend fun saveToken(token: SignInModel.TokenData) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.ACCESS_TOKEN] = token.accessToken
         }
@@ -29,7 +29,7 @@ class TokenRepository @Inject constructor(private val dataStore: DataStore<Prefe
         }
     }
 
-    suspend fun fetchToken(): SignInData.TokenData? {
+    suspend fun fetchToken(): SignInModel.TokenData? {
         return user.first()
     }
 
@@ -37,7 +37,7 @@ class TokenRepository @Inject constructor(private val dataStore: DataStore<Prefe
         return fetchToken() != null
     }
 
-    val user: Flow<SignInData.TokenData?> = dataStore.data
+    val user: Flow<SignInModel.TokenData?> = dataStore.data
         .catch { exception ->
             if (exception is Exception) {
                 emit(emptyPreferences())
@@ -48,7 +48,7 @@ class TokenRepository @Inject constructor(private val dataStore: DataStore<Prefe
         .map { preferences ->
             val accessToken = preferences[PreferencesKeys.ACCESS_TOKEN] ?: ""
             if (accessToken.isNotEmpty()) {
-                SignInData.TokenData(accessToken)
+                SignInModel.TokenData(accessToken)
             } else {
                 null
             }

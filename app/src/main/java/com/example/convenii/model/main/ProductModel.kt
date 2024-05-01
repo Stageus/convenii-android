@@ -1,6 +1,6 @@
 package com.example.convenii.model.main
 
-class ProductData {
+class ProductModel {
 
 
     data class ProductDetailResponseData(
@@ -32,7 +32,9 @@ class ProductData {
     )
 
     data class ProductCompanyResponseData(
-        val data: ProductListData
+        val data: ProductListData,
+        val authStatus: String
+
     )
 
 
