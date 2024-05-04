@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,6 +18,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,9 +40,21 @@ fun MoreScreen(
     val viewModel: MoreViewModel = hiltViewModel()
     val moreData = viewModel.moreData.collectAsState()
     val moreDataState = viewModel.moreDataState.collectAsState()
+    val lazyListState = rememberLazyListState()
 
     LaunchedEffect(key1 = true) {
         viewModel.getProductCompanyData(type!!.toInt())
+    }
+
+    LaunchedEffect(lazyListState, viewModel.isDataEnded) {
+        snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo }
+            .collect { visibleItems ->
+                val lastVisibleItem = visibleItems.lastOrNull()
+                if (lastVisibleItem != null && lastVisibleItem.index == moreData.value.size - 1 && !viewModel.isDataEnded.value) {
+                    viewModel.getProductCompanyData(type!!.toInt())
+                }
+            }
+
     }
 
     Scaffold(
@@ -82,7 +96,9 @@ fun MoreScreen(
                     .fillMaxSize()
                     .background(Color.White)
                     .padding(top = 16.dp)
-                    .padding(horizontal = 20.dp)
+                    .padding(horizontal = 20.dp),
+                userScrollEnabled = true,
+                state = lazyListState
             ) {
 
                 items(moreData.value.size) {

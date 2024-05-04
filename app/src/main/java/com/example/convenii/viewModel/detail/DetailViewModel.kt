@@ -1,40 +1,73 @@
 package com.example.convenii.viewModel.detail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.convenii.model.APIResponse
+import com.example.convenii.model.CommonResponseData
 import com.example.convenii.model.detail.ProductDetailModel
+import com.example.convenii.model.detail.ReviewModel
+import com.example.convenii.repository.BookmarkRepository
 import com.example.convenii.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val detailRepository: DetailRepository
+    private val detailRepository: DetailRepository,
+    private val bookmarkRepository: BookmarkRepository
 ) : ViewModel() {
 
-    private val _productDetailModelState =
+    private val _productDetailDataState =
         MutableStateFlow<APIResponse<ProductDetailModel.ProductDetailResponseData>>(APIResponse.Empty())
-    val productDetailModelState: StateFlow<APIResponse<ProductDetailModel.ProductDetailResponseData>> =
-        _productDetailModelState
+    val productDetailDataState: StateFlow<APIResponse<ProductDetailModel.ProductDetailResponseData>> =
+        _productDetailDataState
+
+    private val _productReviewState =
+        MutableStateFlow<APIResponse<ReviewModel.GetReviewResponseData>>(APIResponse.Empty())
+    val productReviewState: StateFlow<APIResponse<ReviewModel.GetReviewResponseData>> =
+        _productReviewState
+
+    private val _reviewData = MutableStateFlow(mutableListOf<ReviewModel.ReviewData>())
+    val reviewData: StateFlow<MutableList<ReviewModel.ReviewData>> = _reviewData
+
+    private var page = 1
+
+    private val _reviewResponse =
+        MutableStateFlow<APIResponse<CommonResponseData.Response>>(APIResponse.Empty())
+
+    private val _reviewCompleteState = MutableStateFlow(false)
+    val reviewCompleteState: StateFlow<Boolean> = _reviewCompleteState
+
+    private val _isReviewDataEnded = MutableStateFlow(false)
+    val isReviewDataEnded: StateFlow<Boolean> = _isReviewDataEnded
+
+    private val _isDataLoading = MutableStateFlow(false)
+    val isDataLoading: StateFlow<Boolean> = _isDataLoading
+
+    private val _isBookmark = MutableStateFlow(false)
+    val isBookmark: StateFlow<Boolean> = _isBookmark
 
 
     fun getProductDetailData(
         productIdx: Int
     ) {
         viewModelScope.launch {
-            _productDetailModelState.value = detailRepository.getDetailProduct(productIdx)
-
-            if (_productDetailModelState.value is APIResponse.Success) {
-                val newData = (_productDetailModelState.value as APIResponse.Success).data!!.data
-//                _productDetailData.value =
-//                    (_productDetailDataState.value as APIResponse.Success).data!!.data.product
-
+            _productDetailDataState.value = detailRepository.getDetailProduct(productIdx)
+            if (_productDetailDataState.value is APIResponse.Success) {
+                val newData =
+                    (_productDetailDataState.value as APIResponse.Success).data!!.data.product
+                _isBookmark.value = newData.bookmarked
             }
+
         }
     }
 
@@ -65,7 +98,115 @@ class DetailViewModel @Inject constructor(
 
             tableData.add(rowData)
         }
-
         return tableData
+    }
+
+    fun getProductReviewMain(
+        productIdx: Int,
+    ) {
+        viewModelScope.launch {
+            _productReviewState.value = detailRepository.getProductReview(productIdx, 1)
+
+            if (_productReviewState.value is APIResponse.Success) {
+                val newData = (_productReviewState.value as APIResponse.Success).data!!.data.reviews
+                newData.forEach {
+                    it.createdAt = dateProcessing(it.createdAt)
+                }
+                _reviewData.value = newData.toMutableList()
+            }
+        }
+    }
+
+    fun getProductReviewDetail(
+        productIdx: Int
+    ) {
+        _isDataLoading.value = true
+        Log.d("DetailViewModel", "getProductReviewDetail: $page")
+        viewModelScope.launch {
+            _productReviewState.value = detailRepository.getProductReview(productIdx, page)
+            if (_productReviewState.value is APIResponse.Success) {
+                val newData = (_productReviewState.value as APIResponse.Success).data!!.data.reviews
+                if (newData.isEmpty()) {
+                    _isReviewDataEnded.value = true
+                    return@launch
+                }
+
+                newData.forEach {
+                    it.createdAt = dateProcessing(it.createdAt)
+                }
+                _reviewData.value = ArrayList(_reviewData.value).apply {
+                    addAll(newData)
+                }
+            } else {
+                _isReviewDataEnded.value = true
+
+            }
+        }
+        page++
+
+        _isDataLoading.value = false
+    }
+
+    fun postProductReview(
+        productIdx: Int,
+        score: Int,
+        content: String
+    ) {
+        val body = ReviewModel.PostReviewRequestData(score, content)
+        viewModelScope.launch {
+            _reviewResponse.value = detailRepository.postProductReview(productIdx, body)
+
+            if (_reviewResponse.value is APIResponse.Success) {
+                _reviewCompleteState.value = true
+            } else {
+                Log.d(
+                    "DetailViewModel",
+                    "postProductReview: ${(_reviewResponse.value as APIResponse.Error).errorCode}"
+                )
+            }
+        }
+    }
+
+    fun resetReviewCompleteState() {
+        _reviewCompleteState.value = false
+    }
+
+    private fun dateProcessing(dateStr: String): String {
+        val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+        val givenDate =
+            ZonedDateTime.parse(dateStr, formatter).withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+        val currentDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
+        //currentDate 형식 변환
+
+
+        val minutesDiff = ChronoUnit.MINUTES.between(givenDate, currentDate)
+        val hoursDiff = ChronoUnit.HOURS.between(givenDate, currentDate)
+        val daysDiff = ChronoUnit.DAYS.between(givenDate, currentDate)
+
+        return when {
+            minutesDiff < 1 -> "방금 전"
+            minutesDiff < 60 -> "${minutesDiff}분 전"
+            hoursDiff < 24 -> "${hoursDiff}시간 전"
+            else -> "${daysDiff}일 전"
+        }
+    }
+
+    fun postBookmark(productIdx: Int) {
+        viewModelScope.launch {
+            val response = bookmarkRepository.postBookmark(productIdx)
+            if (response is APIResponse.Success) {
+                _isBookmark.value = true
+            }
+        }
+    }
+
+    fun deleteBookmark(productIdx: Int) {
+        viewModelScope.launch {
+            val response = bookmarkRepository.deleteBookmark(productIdx)
+            if (response is APIResponse.Success) {
+                _isBookmark.value = false
+
+            }
+        }
     }
 }

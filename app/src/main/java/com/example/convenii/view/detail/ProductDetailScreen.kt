@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.model.APIResponse
@@ -49,97 +49,102 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun ProductDetailScreen(
     navController: NavController,
-    productIdx: String?
+    productIdx: String?,
+    viewModel: DetailViewModel
 ) {
-    val viewModel: DetailViewModel = hiltViewModel()
     val scrollState = rememberScrollState()
     LaunchedEffect(key1 = true) {
         viewModel.getProductDetailData(productIdx!!.toInt())
+        viewModel.getProductReviewMain(productIdx.toInt())
     }
-    val productDetailDataState = viewModel.productDetailModelState.collectAsState()
+    val productDetailDataState = viewModel.productDetailDataState.collectAsState()
+    val resultState = remember {
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("isUpdate")
+    }
+    val reviewData = viewModel.reviewData.collectAsState()
+    val bookmarked = viewModel.isBookmark.collectAsState()
 
-
-
-
-    Column(
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-            .fillMaxHeight()
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
-                modifier = Modifier
-                    .width(30.dp)
-                    .height(30.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_back),
-                    contentDescription = null,
-
-                    )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            if (productDetailDataState.value is APIResponse.Success) {
-                if (productDetailDataState.value.data!!.rankIdx == 2) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(9.dp))
-                            .clickable(enabled = true, onClick = {})
-                            .background(Color.White)
-                            .height(30.dp)
-                            .width(77.dp)
-                            .border(
-                                BorderStroke(1.dp, Color(0xffE6E8EB)),
-                                shape = RoundedCornerShape(9.dp)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "상품 삭제",
-                            color = Color(0xff646F7C),
-                            fontSize = 11.sp,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Medium,
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(9.dp))
-                            .clickable(enabled = true, onClick = {})
-                            .background(Color.White)
-                            .height(30.dp)
-                            .width(77.dp)
-                            .border(
-                                BorderStroke(1.dp, Color(0xffE6E8EB)),
-                                shape = RoundedCornerShape(9.dp)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "상품 수정",
-                            color = Color(0xff646F7C),
-                            fontSize = 11.sp,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Medium,
-                        )
-                    }
-                }
-            }
-
+    LaunchedEffect(key1 = resultState) {
+        if (resultState?.value == true) {
+            Log.d("ProductDetailScreen", "isUpdate")
         }
 
-        if (productDetailDataState.value is APIResponse.Success) {
-            val productDetailData =
-                (productDetailDataState.value as APIResponse.Success).data!!.data.product
-            val authStatus = (productDetailDataState.value as APIResponse.Success).data!!.authStatus
+    }
 
+    if (productDetailDataState.value is APIResponse.Success) {
+        Column(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .fillMaxHeight()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = {
+                        navController.popBackStack()
+                    },
+                    modifier = Modifier
+                        .width(30.dp)
+                        .height(30.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_back),
+                        contentDescription = null,
+
+                        )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                if (productDetailDataState.value is APIResponse.Success) {
+                    if (productDetailDataState.value.data!!.rankIdx == 2) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(9.dp))
+                                .clickable(enabled = true, onClick = {})
+                                .background(Color.White)
+                                .height(30.dp)
+                                .width(77.dp)
+                                .border(
+                                    BorderStroke(1.dp, Color(0xffE6E8EB)),
+                                    shape = RoundedCornerShape(9.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "상품 삭제",
+                                color = Color(0xff646F7C),
+                                fontSize = 11.sp,
+                                fontFamily = pretendard,
+                                fontWeight = FontWeight.Medium,
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(9.dp))
+                                .clickable(enabled = true, onClick = {})
+                                .background(Color.White)
+                                .height(30.dp)
+                                .width(77.dp)
+                                .border(
+                                    BorderStroke(1.dp, Color(0xffE6E8EB)),
+                                    shape = RoundedCornerShape(9.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "상품 수정",
+                                color = Color(0xff646F7C),
+                                fontSize = 11.sp,
+                                fontFamily = pretendard,
+                                fontWeight = FontWeight.Medium,
+                            )
+                        }
+                    }
+                }
+
+            }
             //메인 컬럼
             Column(
                 modifier = Modifier
@@ -149,7 +154,7 @@ fun ProductDetailScreen(
             ) {
 
                 GlideImage(
-                    imageModel = { productDetailData.productImg },
+                    imageModel = { productDetailDataState.value.data!!.data.product.productImg },
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
                         .fillMaxWidth(0.41f)
@@ -161,33 +166,49 @@ fun ProductDetailScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = productDetailData.name,
+                        text = productDetailDataState.value.data!!.data.product.name,
                         fontSize = 18.sp,
                         fontFamily = pretendard,
                         fontWeight = FontWeight.Bold
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
-                    Icon(
+                    Icon( // 별점
                         painter = painterResource(id = R.drawable.icon_fill_star),
                         contentDescription = null,
                         tint = Color(0xffFFD643)
                     )
                     Text(
-                        text = productDetailData.score,
+                        text = productDetailDataState.value.data!!.data.product.score,
                         fontSize = 16.sp,
                         fontFamily = pretendard,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(start = 5.dp, end = 10.dp)
                     )
                 }
-                Text(
-                    text = "${productDetailData.price}원",
+                Text( //가격
+                    text = "${productDetailDataState.value.data!!.data.product.price}원",
                     fontSize = 16.sp,
                     fontFamily = pretendard,
                     fontWeight = FontWeight.Normal
                 )
                 Spacer(modifier = Modifier.height(20.dp))
+
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    BookmarkBtn(
+                        bookmarked = bookmarked.value,
+                        onClick = {
+                            if (bookmarked.value) {
+                                viewModel.deleteBookmark(productIdx!!.toInt())
+                            } else {
+                                viewModel.postBookmark(productIdx!!.toInt())
+                            }
+                        })
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
 
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -196,7 +217,7 @@ fun ProductDetailScreen(
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp)
                 ) {
-                    for (event in productDetailData.eventInfo[0].events) {
+                    for (event in productDetailDataState.value.data!!.data.product.eventInfo[0].events) {
                         when (event.companyIdx) {
                             1 -> {
                                 EventRow(
@@ -233,8 +254,12 @@ fun ProductDetailScreen(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                Log.d("productDetailData", productDetailData.eventInfo.toString())
-                val originalEventData = productDetailData.eventInfo
+                Log.d(
+                    "productDetailData",
+                    productDetailDataState.value.data!!.data.product.eventInfo.toString()
+                )
+                val originalEventData =
+                    productDetailDataState.value.data!!.data.product.eventInfo
                 val tableData = viewModel.convertEventData(originalEventData)
 
 
@@ -246,49 +271,48 @@ fun ProductDetailScreen(
                     fontSize = 12.sp,
                     fontFamily = pretendard,
                     fontWeight = FontWeight.Normal,
-                    color = Color(0xff7D8791)
+                    color = Color(0xff7D8791),
+                    modifier = Modifier.clickable {
+                        navController.navigate("reviewDetail/${productIdx}")
+                    }
                 )
 
-                val sampleComment = List<CommentSampleData>(5) {
-                    CommentSampleData(
-                        idx = it,
-                        productIdx = 1,
-                        nickname = "준혁이",
-                        content = "맛있어요",
-                        score = 5,
-                        created_at = "2021-09-01"
-                    )
-                }
-
                 Column {
-                    sampleComment.forEachIndexed { index, it ->
+
+                    reviewData.value.forEachIndexed { index, it ->
                         if (index > 0) Spacer(modifier = Modifier.height(10.dp))
                         CommentUi(
                             nickname = it.nickname,
                             star = it.score,
                             comment = it.content,
-                            date = it.created_at
+                            date = it.createdAt
                         )
                     }
                 }
 
-                ConfirmBtn(
-                    text = "리뷰 남기기",
-                    enabled = true,
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.dp, bottom = 20.dp)
-                )
-
+                if (productDetailDataState.value.data!!.rankIdx != 0) {
+                    ConfirmBtn(
+                        text = "리뷰 남기기",
+                        enabled = true,
+                        onClick = {
+                            navController.navigate("reviewAdd")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp, bottom = 20.dp)
+                    )
+                }
             } // 메인 컬럼 끝
-
         }
-
-
+        // success 끝
+    } else {
+        // 로딩
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+        )
     }
-
-
 }
 
 @Composable
@@ -336,6 +360,8 @@ fun TableRow(rowData: List<String>) {
             TableCell(text = cellData, weight = 2f) // 나머지 열들은 더 넓게 설정됩니다.
         }
     }
+
+
 }
 
 @Composable
@@ -359,13 +385,41 @@ fun RowScope.TableCell(
 
         )
     }
+
+
 }
 
-data class CommentSampleData(
-    var idx: Int,
-    var productIdx: Int,
-    var nickname: String,
-    var content: String,
-    var score: Int,
-    var created_at: String
-)
+
+@Composable
+fun BookmarkBtn(bookmarked: Boolean, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(enabled = true, onClick = {
+                onClick()
+            })
+            .background(
+                if (bookmarked) {
+                    Color(0xff7D8791)
+                } else {
+                    Color(0xff2D8DF4)
+                }
+            )
+            .height(30.dp)
+            .width(77.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = if (bookmarked) {
+                "북마크 취소"
+            } else {
+                "북마크"
+            },
+            color = Color.White,
+            fontSize = 12.sp,
+            fontFamily = pretendard,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+
+}

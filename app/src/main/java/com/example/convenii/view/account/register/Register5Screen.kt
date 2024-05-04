@@ -42,6 +42,7 @@ import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
 import com.example.convenii.viewModel.account.RegisterViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Register5Screen(
     navController: NavController,

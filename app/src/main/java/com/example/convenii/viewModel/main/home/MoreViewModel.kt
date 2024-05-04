@@ -1,6 +1,5 @@
 package com.example.convenii.viewModel.main.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.convenii.model.APIResponse
@@ -27,6 +26,9 @@ class MoreViewModel @Inject constructor(
     private val _moreData = MutableStateFlow(mutableListOf<ProductModel.ProductCompanyData>())
     val moreData: StateFlow<MutableList<ProductModel.ProductCompanyData>> = _moreData
 
+    private val _isDataEnded = MutableStateFlow(false)
+    val isDataEnded: StateFlow<Boolean> = _isDataEnded
+
 
     init {
         resetData()
@@ -49,12 +51,17 @@ class MoreViewModel @Inject constructor(
 
             if (_moreDataState.value is APIResponse.Success) {
                 val newData = (_moreDataState.value as APIResponse.Success).data!!.data.productList
+                if (newData.isEmpty()) {
+                    _isDataEnded.value = true
+                    return@launch
+                }
                 _moreData.value = ArrayList(_moreData.value).apply {
                     addAll(newData)
                 }
 
-                Log.d("MoreViewModel", "getProductCompanyData: ${_moreData.value.size}")
                 _page.value++
+            } else {
+                _isDataEnded.value = true
             }
         }
 

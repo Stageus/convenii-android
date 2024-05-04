@@ -7,6 +7,7 @@ import com.example.convenii.model.detail.ProductDetailModel
 import com.example.convenii.model.detail.ReviewModel
 import com.example.convenii.model.main.ProductModel
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -52,7 +53,28 @@ interface ApiService {
     suspend fun getProductReview(
         @Path("productIdx") productIdx: Int,
         @Query("page") page: Int
-    ): retrofit2.Response<ReviewModel.ReviewResponseData>
+    ): retrofit2.Response<ReviewModel.GetReviewResponseData>
+
+    @POST("review/product/{productIdx}")
+    suspend fun postProductReview(
+        @Path("productIdx") productIdx: Int,
+        @Body body: ReviewModel.PostReviewRequestData
+    ): retrofit2.Response<CommonResponseData.Response>
+
+    //bookmark -------------------------------------
+    @GET("bookmark/all")
+    suspend fun getAllBookmark(): retrofit2.Response<ProductModel.ProductCompanyResponseData>
+
+    @POST("bookmark/product/{productIdx}")
+    suspend fun postBookmark(
+        @Path("productIdx") productIdx: Int
+    ): retrofit2.Response<CommonResponseData.Response>
+
+
+    @DELETE("bookmark/product/{productIdx}")
+    suspend fun deleteBookmark(
+        @Path("productIdx") productIdx: Int
+    ): retrofit2.Response<CommonResponseData.Response>
 
 
 }

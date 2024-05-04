@@ -2,8 +2,9 @@ package com.example.convenii.model.detail
 
 class ReviewModel {
 
-    data class ReviewResponseData(
-        val data: ReviewsData
+    data class GetReviewResponseData(
+        val data: ReviewsData,
+        val authStatus: String
     )
 
     data class ReviewsData(
@@ -15,6 +16,11 @@ class ReviewModel {
         val nickname: String,
         val content: String,
         val score: Int,
-        val createdAt: String
+        var createdAt: String
+    )
+
+    data class PostReviewRequestData(
+        val score: Int,
+        val content: String
     )
 }

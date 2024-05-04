@@ -26,7 +26,7 @@ fun BottomNav(navController: NavController) {
         ConveniiScreen.Home,
         ConveniiScreen.SearchMain,
         ConveniiScreen.ReviewAdd,
-        ConveniiScreen.Register1,
+        ConveniiScreen.Profile,
     )
 
     val screenName = listOf(
@@ -49,7 +49,7 @@ fun BottomNav(navController: NavController) {
                 onClick = {
                     navController.navigate(screen.name) {
 //                        popUpTo(navController.graph.findStartDestination().id)
-                        launchSingleTop = true
+                        launchSingleTop = true // SingleTop
                     }
                 },
                 icon = {

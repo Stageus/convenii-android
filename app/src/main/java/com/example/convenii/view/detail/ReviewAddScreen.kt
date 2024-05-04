@@ -4,7 +4,6 @@ package com.example.convenii.view.detail
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,8 +18,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,15 +30,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,12 +49,48 @@ import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.ConfirmBtn
+import com.example.convenii.view.components.CustomConfirmDialog
+import com.example.convenii.viewModel.detail.DetailViewModel
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
-fun ReviewAddScreen(navController: NavController) {
+fun ReviewAddScreen(
+    navController: NavController,
+    viewModel: DetailViewModel
+) {
     //변경될 수 있는 score 값
     var star by remember { mutableIntStateOf(1) }
+    var review by remember { mutableStateOf("") }
+
+    val productDetailDataSate = viewModel.productDetailDataState.collectAsState()
+    val productDetailData = productDetailDataSate.value.data!!.data.product
+
+    val reviewCompleteState = viewModel.reviewCompleteState.collectAsState()
+
+    when {
+        reviewCompleteState.value -> {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                CustomConfirmDialog(
+                    onDismissRequest = {
+                        viewModel.resetReviewCompleteState()
+                        navController.previousBackStackEntry?.savedStateHandle?.set(
+                            "isUpdate",
+                            true
+                        )
+                        navController.popBackStack()
+                    },
+                    mainTitle = "리뷰가 등록되었습니다",
+                    subTitle = "리뷰가 등록되었습니다",
+                    btnText = "확인",
+                )
+            }
+        }
+    }
+
+
+    val scrollState = rememberScrollState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,7 +127,13 @@ fun ReviewAddScreen(navController: NavController) {
             ConfirmBtn(
                 text = "리뷰 남기기",
                 enabled = true,
-                onClick = { /*TODO*/ },
+                onClick = {
+                    viewModel.postProductReview(
+                        productDetailData.idx,
+                        star,
+                        review
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
@@ -98,30 +142,36 @@ fun ReviewAddScreen(navController: NavController) {
 
         }
     ) { innerPadding ->
+
         Box(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
                 .background(Color.White)
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp)
+
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 16.dp)
+
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.test), contentDescription = null,
+
+
+                com.skydoves.landscapist.glide.GlideImage(
+                    imageModel = {
+                        productDetailData.productImg
+
+                    },
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
                         .fillMaxWidth(0.41f)
                         .aspectRatio(1f)
                         .align(Alignment.CenterHorizontally),
-                    contentScale = ContentScale.FillBounds,
                 )
 
                 Text(
-                    text = "상품명",
+                    text = productDetailData.name,
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -171,10 +221,16 @@ fun ReviewAddScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                var tmp = ""
 
                 BasicTextField(
-                    value = tmp, onValueChange = {},
+                    value = review, onValueChange = {
+                        review = it
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = pretendard,
+                        fontWeight = FontWeight.Bold
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp),
@@ -183,8 +239,9 @@ fun ReviewAddScreen(navController: NavController) {
                             modifier = Modifier
                                 .background(Color(0xffffffff))
                                 .border(1.dp, Color(0xffD1D1D1), RoundedCornerShape(8.dp))
+                                .padding(16.dp)
                         ) {
-                            if (tmp.isEmpty()) {
+                            if (review.isEmpty()) {
                                 Text(
                                     text = "리뷰를 작성해주세요",
                                     style = TextStyle(
@@ -193,7 +250,6 @@ fun ReviewAddScreen(navController: NavController) {
                                         fontFamily = pretendard,
                                         fontWeight = FontWeight.Bold
                                     ),
-                                    modifier = Modifier.padding(16.dp)
                                 )
                             }
                             innerTextField()
@@ -203,9 +259,9 @@ fun ReviewAddScreen(navController: NavController) {
 
 
             }  //column
+
+
         }
-
-
     }
 
 }

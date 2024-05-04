@@ -1,37 +1,23 @@
 package com.example.convenii.repository
 
-import android.util.Log
 import com.example.convenii.dataSource.RemoteDataSource
 import com.example.convenii.model.APIResponse
 import com.example.convenii.model.CommonResponseData
-import com.example.convenii.model.detail.ProductDetailModel
-import com.example.convenii.model.detail.ReviewModel
+import com.example.convenii.model.main.ProductModel
 
 
-interface DetailRepository {
-    suspend fun getDetailProduct(
-        productIdx: Int
-    ): APIResponse<ProductDetailModel.ProductDetailResponseData>
-
-    suspend fun getProductReview(
-        productIdx: Int,
-        page: Int
-    ): APIResponse<ReviewModel.GetReviewResponseData>
-
-    suspend fun postProductReview(
-        productIdx: Int,
-        body: ReviewModel.PostReviewRequestData
-    ): APIResponse<CommonResponseData.Response>
+interface BookmarkRepository {
+    suspend fun getAllBookmark(): APIResponse<ProductModel.ProductCompanyResponseData>
+    suspend fun postBookmark(productIdx: Int): APIResponse<CommonResponseData.Response>
+    suspend fun deleteBookmark(productIdx: Int): APIResponse<CommonResponseData.Response>
 }
 
-class DetailRepositoryImpl(
+class BookmarkRepositoryImpl(
     private val remoteDataSource: RemoteDataSource
-) : DetailRepository {
-    override suspend fun getDetailProduct(
-        productIdx: Int
-    ): APIResponse<ProductDetailModel.ProductDetailResponseData> {
+) : BookmarkRepository {
+    override suspend fun getAllBookmark(): APIResponse<ProductModel.ProductCompanyResponseData> {
         try {
-            val response = remoteDataSource.getProductDetail(productIdx)
+            val response = remoteDataSource.getAllBookmark()
             return if (response.isSuccessful) {
                 APIResponse.Success(data = response.body())
             } else {
@@ -44,19 +30,15 @@ class DetailRepositoryImpl(
             }
         } catch (e: Exception) {
             return APIResponse.Error(
-                message = "Get product detail failed: ${e.message}",
+                message = "Get all bookmark failed: ${e.message}",
                 errorCode = "500"
             )
         }
     }
 
-    override suspend fun getProductReview(
-        productIdx: Int,
-        page: Int
-    ): APIResponse<ReviewModel.GetReviewResponseData> {
+    override suspend fun postBookmark(productIdx: Int): APIResponse<CommonResponseData.Response> {
         try {
-            val response = remoteDataSource.getProductReview(productIdx, page)
-            Log.d("DetailRepositoryImpl", "getProductReview: ${response.body()}")
+            val response = remoteDataSource.postBookmark(productIdx)
             return if (response.isSuccessful) {
                 APIResponse.Success(data = response.body())
             } else {
@@ -69,18 +51,15 @@ class DetailRepositoryImpl(
             }
         } catch (e: Exception) {
             return APIResponse.Error(
-                message = "Get product review failed: ${e.message}",
+                message = "Post bookmark failed: ${e.message}",
                 errorCode = "500"
             )
         }
     }
 
-    override suspend fun postProductReview(
-        productIdx: Int,
-        body: ReviewModel.PostReviewRequestData
-    ): APIResponse<CommonResponseData.Response> {
+    override suspend fun deleteBookmark(productIdx: Int): APIResponse<CommonResponseData.Response> {
         try {
-            val response = remoteDataSource.postProductReview(productIdx, body)
+            val response = remoteDataSource.deleteBookmark(productIdx)
             return if (response.isSuccessful) {
                 APIResponse.Success(data = response.body())
             } else {
@@ -93,7 +72,7 @@ class DetailRepositoryImpl(
             }
         } catch (e: Exception) {
             return APIResponse.Error(
-                message = "Post product review failed: ${e.message}",
+                message = "Delete bookmark failed: ${e.message}",
                 errorCode = "500"
             )
         }

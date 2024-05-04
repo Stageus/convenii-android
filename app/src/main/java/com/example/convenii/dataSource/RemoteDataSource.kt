@@ -4,6 +4,7 @@ import com.example.convenii.model.CommonResponseData
 import com.example.convenii.model.account.RegisterModel
 import com.example.convenii.model.account.SignInModel
 import com.example.convenii.model.detail.ProductDetailModel
+import com.example.convenii.model.detail.ReviewModel
 import com.example.convenii.model.main.ProductModel
 import com.example.convenii.service.ApiService
 import retrofit2.Response
@@ -34,6 +35,21 @@ interface RemoteDataSource {
 
     //detail -------------------------------------
     suspend fun getProductDetail(productIdx: Int): Response<ProductDetailModel.ProductDetailResponseData>
+
+    suspend fun getProductReview(
+        productIdx: Int,
+        page: Int
+    ): Response<ReviewModel.GetReviewResponseData>
+
+    suspend fun postProductReview(
+        productIdx: Int,
+        body: ReviewModel.PostReviewRequestData
+    ): Response<CommonResponseData.Response>
+
+    //bookmark -------------------------------------
+    suspend fun getAllBookmark(): Response<ProductModel.ProductCompanyResponseData>
+    suspend fun postBookmark(productIdx: Int): Response<CommonResponseData.Response>
+    suspend fun deleteBookmark(productIdx: Int): Response<CommonResponseData.Response>
 }
 
 
@@ -87,4 +103,32 @@ class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiServic
     override suspend fun getProductDetail(productIdx: Int): Response<ProductDetailModel.ProductDetailResponseData> {
         return apiService.getProductDetail(productIdx)
     }
+
+    override suspend fun getProductReview(
+        productIdx: Int,
+        page: Int
+    ): Response<ReviewModel.GetReviewResponseData> {
+        return apiService.getProductReview(productIdx, page)
+    }
+
+    override suspend fun postProductReview(
+        productIdx: Int,
+        body: ReviewModel.PostReviewRequestData
+    ): Response<CommonResponseData.Response> {
+        return apiService.postProductReview(productIdx, body)
+    }
+
+    //bookmark -------------------------------------
+    override suspend fun getAllBookmark(): Response<ProductModel.ProductCompanyResponseData> {
+        return apiService.getAllBookmark()
+    }
+
+    override suspend fun postBookmark(productIdx: Int): Response<CommonResponseData.Response> {
+        return apiService.postBookmark(productIdx)
+    }
+
+    override suspend fun deleteBookmark(productIdx: Int): Response<CommonResponseData.Response> {
+        return apiService.deleteBookmark(productIdx)
+    }
+
 }

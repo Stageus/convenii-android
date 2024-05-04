@@ -20,7 +20,7 @@ class ProductDetailModel {
         val productImg: String,
         val score: String,
         val createdAt: String,
-        val bookmarked: Boolean,
+        var bookmarked: Boolean,
         val eventInfo: List<EventInfoData>
     )
 

@@ -31,6 +31,7 @@ import com.example.convenii.view.main.home.HomeScreen
 import com.example.convenii.view.main.home.MoreGSScreen
 import com.example.convenii.view.main.home.MoreScreen
 import com.example.convenii.view.main.search.SearchMainScreen
+import com.example.convenii.view.profile.ProfileScreen
 
 enum class ConveniiScreen(val route: String, val title: String, val icon: Int? = null) {
     Start("start", "시작", R.drawable.icon_home),
@@ -42,11 +43,12 @@ enum class ConveniiScreen(val route: String, val title: String, val icon: Int? =
     Register5("register5", "회원가입"),
     Home("home", "홈", R.drawable.icon_home),
     ProductDetail("productDetail/{productIdx}", "상품 상세"),
-    ReviewDetail("reviewDetail", "리뷰 상세"),
+    ReviewDetail("reviewDetail/{productIdx}", "리뷰 상세"),
     ReviewAdd("reviewAdd", "리뷰 작성", R.drawable.icon_search),
     SearchMain("searchMain", "검색", R.drawable.icon_search),
     MoreGS("moreGS", "더보기"),
     More("more/{type}", "더보기"),
+    Profile("profile", "내정보", R.drawable.icon_profile),
 
 }
 
@@ -174,7 +176,9 @@ fun ConveniiApp(
             )
         }
 
-        composable(route = ConveniiScreen.Home.name) { backStackEntry ->
+        composable(route = ConveniiScreen.Home.name,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None }) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(ConveniiScreen.Home.name)
             }
@@ -188,22 +192,35 @@ fun ConveniiApp(
             route = ConveniiScreen.ProductDetail.route,
             arguments = listOf(navArgument("productIdx") { type = NavType.StringType })
         ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.ProductDetail.route)
+            }
             val productIdx = backStackEntry.arguments?.getString("productIdx")
             ProductDetailScreen(
+                navController = navController,
+                productIdx = productIdx,
+                viewModel = hiltViewModel(parentEntry)
+            )
+        }
+
+        composable(
+            route = ConveniiScreen.ReviewDetail.route,
+            arguments = listOf(navArgument("productIdx") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val productIdx = backStackEntry.arguments?.getString("productIdx")
+            ReviewDetailScreen(
                 navController = navController,
                 productIdx = productIdx
             )
         }
 
-        composable(route = ConveniiScreen.ReviewDetail.name) {
-            ReviewDetailScreen(
-                navController = navController
-            )
-        }
-
-        composable(route = ConveniiScreen.ReviewAdd.name) {
+        composable(route = ConveniiScreen.ReviewAdd.name) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.ProductDetail.route)
+            }
             ReviewAddScreen(
-                navController = navController
+                navController = navController,
+                viewModel = hiltViewModel(parentEntry)
             )
         }
 
@@ -227,6 +244,16 @@ fun ConveniiApp(
             MoreScreen(
                 navController = navController,
                 type = type
+            )
+        }
+
+        composable(
+            route = ConveniiScreen.Profile.name,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+        ) {
+            ProfileScreen(
+                navController = navController
             )
         }
     }
