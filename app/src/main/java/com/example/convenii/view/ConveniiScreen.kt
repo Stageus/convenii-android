@@ -1,5 +1,6 @@
 package com.example.convenii.view
 
+import BookmarkScreen
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
@@ -49,6 +50,7 @@ enum class ConveniiScreen(val route: String, val title: String, val icon: Int? =
     MoreGS("moreGS", "더보기"),
     More("more/{type}", "더보기"),
     Profile("profile", "내정보", R.drawable.icon_profile),
+    Bookmark("bookmark", "즐겨찾기", R.drawable.icon_bookmark),
 
 }
 
@@ -224,7 +226,9 @@ fun ConveniiApp(
             )
         }
 
-        composable(route = ConveniiScreen.SearchMain.name) {
+        composable(route = ConveniiScreen.SearchMain.name,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None }) {
             SearchMainScreen(
                 navController = navController
             )
@@ -244,6 +248,16 @@ fun ConveniiApp(
             MoreScreen(
                 navController = navController,
                 type = type
+            )
+        }
+
+        composable(
+            route = ConveniiScreen.Bookmark.name,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+        ) {
+            BookmarkScreen(
+                navController = navController
             )
         }
 

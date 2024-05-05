@@ -25,16 +25,10 @@ fun BottomNav(navController: NavController) {
     val items = listOf(
         ConveniiScreen.Home,
         ConveniiScreen.SearchMain,
-        ConveniiScreen.ReviewAdd,
+        ConveniiScreen.Bookmark,
         ConveniiScreen.Profile,
     )
 
-    val screenName = listOf(
-        "홈",
-        "검색",
-        "로그인",
-        "회원가입",
-    )
 
     BottomNavigation(
         backgroundColor = Color.White,

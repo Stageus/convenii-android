@@ -7,7 +7,10 @@ import com.example.convenii.model.main.ProductModel
 
 
 interface BookmarkRepository {
-    suspend fun getAllBookmark(): APIResponse<ProductModel.ProductCompanyResponseData>
+    suspend fun getAllBookmark(
+        page: Int
+    ): APIResponse<ProductModel.ProductCompanyResponseData>
+
     suspend fun postBookmark(productIdx: Int): APIResponse<CommonResponseData.Response>
     suspend fun deleteBookmark(productIdx: Int): APIResponse<CommonResponseData.Response>
 }
@@ -15,9 +18,13 @@ interface BookmarkRepository {
 class BookmarkRepositoryImpl(
     private val remoteDataSource: RemoteDataSource
 ) : BookmarkRepository {
-    override suspend fun getAllBookmark(): APIResponse<ProductModel.ProductCompanyResponseData> {
+    override suspend fun getAllBookmark(
+        page: Int
+    ): APIResponse<ProductModel.ProductCompanyResponseData> {
         try {
-            val response = remoteDataSource.getAllBookmark()
+            val response = remoteDataSource.getAllBookmark(
+                page = page
+            )
             return if (response.isSuccessful) {
                 APIResponse.Success(data = response.body())
             } else {

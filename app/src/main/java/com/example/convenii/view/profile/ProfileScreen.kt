@@ -43,7 +43,8 @@ fun ProfileScreen(
                 title = {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxSize()
+                            .padding(end = 15.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(

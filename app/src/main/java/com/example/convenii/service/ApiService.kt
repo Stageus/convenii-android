@@ -63,7 +63,9 @@ interface ApiService {
 
     //bookmark -------------------------------------
     @GET("bookmark/all")
-    suspend fun getAllBookmark(): retrofit2.Response<ProductModel.ProductCompanyResponseData>
+    suspend fun getAllBookmark(
+        @Query("page") page: Int
+    ): retrofit2.Response<ProductModel.ProductCompanyResponseData>
 
     @POST("bookmark/product/{productIdx}")
     suspend fun postBookmark(

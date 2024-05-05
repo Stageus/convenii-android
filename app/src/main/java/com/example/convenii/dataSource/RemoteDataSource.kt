@@ -47,7 +47,10 @@ interface RemoteDataSource {
     ): Response<CommonResponseData.Response>
 
     //bookmark -------------------------------------
-    suspend fun getAllBookmark(): Response<ProductModel.ProductCompanyResponseData>
+    suspend fun getAllBookmark(
+        page: Int
+    ): Response<ProductModel.ProductCompanyResponseData>
+
     suspend fun postBookmark(productIdx: Int): Response<CommonResponseData.Response>
     suspend fun deleteBookmark(productIdx: Int): Response<CommonResponseData.Response>
 }
@@ -119,8 +122,12 @@ class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiServic
     }
 
     //bookmark -------------------------------------
-    override suspend fun getAllBookmark(): Response<ProductModel.ProductCompanyResponseData> {
-        return apiService.getAllBookmark()
+    override suspend fun getAllBookmark(
+        page: Int
+    ): Response<ProductModel.ProductCompanyResponseData> {
+        return apiService.getAllBookmark(
+            page = page
+        )
     }
 
     override suspend fun postBookmark(productIdx: Int): Response<CommonResponseData.Response> {
