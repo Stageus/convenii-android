@@ -1,6 +1,9 @@
 package com.example.convenii.view.profile
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,17 +28,45 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.BottomNav
+import com.example.convenii.view.components.CustomSelectDialog
+import com.example.convenii.viewModel.main.home.HomeViewModel
 
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     navController: NavController
 ) {
+    val viewModel: HomeViewModel = hiltViewModel()
+    val openAlertDialog = remember { mutableStateOf(false) }
+
+    when {
+        openAlertDialog.value -> {
+            CustomSelectDialog(
+                onDismissRequest = { openAlertDialog.value = false },
+                onConfirm = {
+                    viewModel.deleteToken()
+                    openAlertDialog.value = false
+                    navController.navigate("start") {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                },
+                mainTitle = "로그아웃",
+                subTitle = "로그아웃 하시겠습니까?",
+                confirmBtnText = "확인",
+                cancelBtnText = "취소",
+            )
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -149,7 +182,13 @@ fun ProfileScreen(
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.height(64.dp)
+                    modifier = Modifier
+                        .height(64.dp)
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null
+
+                        ) { openAlertDialog.value = true }
                 ) {
                     Text(
                         text = "로그아웃",

@@ -42,7 +42,6 @@ fun BottomNav(navController: NavController) {
                 selected = currentRoute == screen.name,
                 onClick = {
                     navController.navigate(screen.name) {
-//                        popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true // SingleTop
                     }
                 },

@@ -78,5 +78,14 @@ interface ApiService {
         @Path("productIdx") productIdx: Int
     ): retrofit2.Response<CommonResponseData.Response>
 
+    //Search -------------------------------------
+    @GET("product/search")
+    suspend fun getSearchData(
+        @Query("keyword") keyword: String?,
+        @Query("eventFilter") eventFilter: String?,
+        @Query("categoryFilter") categoryFilter: String?,
+        @Query("page") page: Int
+    ): retrofit2.Response<ProductModel.ProductCompanyResponseData>
+
 
 }

@@ -9,6 +9,8 @@ import com.example.convenii.repository.DetailRepository
 import com.example.convenii.repository.DetailRepositoryImpl
 import com.example.convenii.repository.MainRepository
 import com.example.convenii.repository.MainRepositoryImpl
+import com.example.convenii.repository.SearchRepository
+import com.example.convenii.repository.SearchRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,4 +41,9 @@ object RepositoryModule {
     @Singleton
     fun provideBookmarkRepository(remoteDataSource: RemoteDataSource): BookmarkRepository =
         BookmarkRepositoryImpl(remoteDataSource)
+
+    @Provides
+    @Singleton
+    fun provideSearchRepository(remoteDataSource: RemoteDataSource): SearchRepository =
+        SearchRepositoryImpl(remoteDataSource)
 }

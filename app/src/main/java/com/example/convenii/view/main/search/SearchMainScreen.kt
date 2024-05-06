@@ -1,9 +1,11 @@
 package com.example.convenii.view.main.search
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -23,6 +26,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,18 +36,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.BottomNav
+import com.example.convenii.viewModel.main.Search.SearchViewModel
 
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun SearchMainScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: SearchViewModel
 ) {
+    val keyword by viewModel.keyword.collectAsState()
+    val searchHistory by viewModel.searchHistory.collectAsState()
+    LaunchedEffect(key1 = true) {
+        viewModel.resetData()
+        viewModel.resetFilter()
+        viewModel.getSearchHistory()
+    }
     Scaffold(
         bottomBar = {
             BottomNav(navController = navController)
@@ -92,11 +109,13 @@ fun SearchMainScreen(
                     }
                 }
 
+
+
                 Spacer(modifier = Modifier.height(16.dp))
 
-                var tmp = ""
+
                 OutlinedTextField(
-                    value = tmp, onValueChange = {},
+                    value = keyword, onValueChange = { viewModel.setKeyword(it) },
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_search),
@@ -126,7 +145,16 @@ fun SearchMainScreen(
                         unfocusedIndicatorColor = Color(0xffE6E8EB), // 포커스 없
                         // 을 때 색상
                     ),
-                    keyboardOptions = KeyboardOptions.Default
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            viewModel.saveSearchHistory(keyword)
+                            viewModel.getSearchData()
+                            navController.navigate("searchResult")
+                        }
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -141,17 +169,40 @@ fun SearchMainScreen(
                 )
 
                 LazyColumn {
-                    items(3) { index ->
+                    items(searchHistory.size) { index ->
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "최근 검색어 $index",
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                fontFamily = pretendard,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xff646F7C)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    viewModel.setKeyword(searchHistory[index])
+                                    viewModel.getSearchData()
+                                    viewModel.saveSearchHistory(searchHistory[index])
+                                    navController.navigate("searchResult")
+                                }
+                        ) {
+                            Text(
+                                text = searchHistory[index],
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontFamily = pretendard,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color(0xff646F7C)
+                                )
                             )
-                        )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_delete),
+                                contentDescription = null,
+                                modifier = Modifier.clickable(
+                                    interactionSource = MutableInteractionSource(),
+                                    indication = null
+                                ) {
+                                    viewModel.deleteSearchHistory(searchHistory[index])
+                                }
+                            )
+                        }
+
                     }
                 }
             } // main column
@@ -159,5 +210,6 @@ fun SearchMainScreen(
         }
 
     }
-
 }
+
+

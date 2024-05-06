@@ -100,7 +100,6 @@ fun MoreScreen(
                 userScrollEnabled = true,
                 state = lazyListState
             ) {
-
                 items(moreData.value.size) {
                     if (it != 0) {
                         Spacer(modifier = Modifier.padding(3.dp))
@@ -116,8 +115,6 @@ fun MoreScreen(
                         productImg = moreData.value[it].productImg,
                     )
                 }
-
-
             }
 
 

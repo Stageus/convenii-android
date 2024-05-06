@@ -39,10 +39,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.convenii.R
 import com.example.convenii.model.main.ProductModel
 import com.example.convenii.ui.theme.pretendard
@@ -358,7 +358,10 @@ fun CustomConfirmDialog(
     subTitle: String,
     btnText: String
 ) {
-    Dialog(onDismissRequest = onDismissRequest) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -422,7 +425,7 @@ fun CustomConfirmDialog(
 }
 
 @Composable
-fun CustomSelectBtn(
+fun CustomSelectDialog(
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
     mainTitle: String,
@@ -430,7 +433,10 @@ fun CustomSelectBtn(
     confirmBtnText: String,
     cancelBtnText: String
 ) {
-    Dialog(onDismissRequest = onDismissRequest) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -499,7 +505,7 @@ fun CustomSelectBtn(
 
 
                     Button(
-                        onClick = onDismissRequest,
+                        onClick = onConfirm,
                         modifier = Modifier
                             .height(52.dp)
                             .weight(1f),
@@ -524,16 +530,4 @@ fun CustomSelectBtn(
     }
 }
 
-@Preview
-@Composable
-fun PreviewTest() {
-    CustomSelectBtn(
-        onDismissRequest = { /*TODO*/ },
-        onConfirm = { /*TODO*/ },
-        mainTitle = "정말 삭제하시겠어요?",
-        subTitle = "삭제시 복구가 불가능해요",
-        confirmBtnText = "삭제하기",
-        cancelBtnText = "취소하기"
-    )
-}
 

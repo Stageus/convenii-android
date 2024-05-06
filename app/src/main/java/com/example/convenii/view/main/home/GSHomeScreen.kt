@@ -41,15 +41,22 @@ fun GSHomeScreen(
     }
 
     val showExpiredDialog = remember { mutableStateOf(false) }
+    val showSeverErrorDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(authStatus.value) {
         showExpiredDialog.value = authStatus.value == "expired"
     }
 
+    LaunchedEffect(homeGSData.value) {
+        if (homeGSData.value is APIResponse.Error) {
+            showSeverErrorDialog.value = true
+        }
+
+    }
+
     if (showExpiredDialog.value) {
         CustomConfirmDialog(
             onDismissRequest = {
-
                 viewModel.deleteToken()
                 showExpiredDialog.value = false
                 navController.navigate("start") {
@@ -60,6 +67,15 @@ fun GSHomeScreen(
             },
             mainTitle = "로그인 정보가 만료되었습니다",
             subTitle = "다시 로그인해주세요",
+            btnText = "확인"
+        )
+    }
+
+    if (showSeverErrorDialog.value) {
+        CustomConfirmDialog(
+            onDismissRequest = { showSeverErrorDialog.value = false },
+            mainTitle = "서버 오류가 발생했습니다",
+            subTitle = "잠시 후 다시 시도해주세요",
             btnText = "확인"
         )
     }

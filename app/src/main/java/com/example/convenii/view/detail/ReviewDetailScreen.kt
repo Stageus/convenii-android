@@ -124,8 +124,6 @@ fun ReviewDetailScreen(
                 .padding(horizontal = 16.dp)
         ) {
             //20개 반복 데이터 반복
-
-
             LazyColumn(
                 userScrollEnabled = true,
                 state = lazyListState,

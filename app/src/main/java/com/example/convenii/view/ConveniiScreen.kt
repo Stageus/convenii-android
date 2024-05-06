@@ -29,9 +29,9 @@ import com.example.convenii.view.detail.ProductDetailScreen
 import com.example.convenii.view.detail.ReviewAddScreen
 import com.example.convenii.view.detail.ReviewDetailScreen
 import com.example.convenii.view.main.home.HomeScreen
-import com.example.convenii.view.main.home.MoreGSScreen
 import com.example.convenii.view.main.home.MoreScreen
 import com.example.convenii.view.main.search.SearchMainScreen
+import com.example.convenii.view.main.search.SearchResultScreen
 import com.example.convenii.view.profile.ProfileScreen
 
 enum class ConveniiScreen(val route: String, val title: String, val icon: Int? = null) {
@@ -47,7 +47,7 @@ enum class ConveniiScreen(val route: String, val title: String, val icon: Int? =
     ReviewDetail("reviewDetail/{productIdx}", "리뷰 상세"),
     ReviewAdd("reviewAdd", "리뷰 작성", R.drawable.icon_search),
     SearchMain("searchMain", "검색", R.drawable.icon_search),
-    MoreGS("moreGS", "더보기"),
+    SearchResult("searchResult", "검색 결과"),
     More("more/{type}", "더보기"),
     Profile("profile", "내정보", R.drawable.icon_profile),
     Bookmark("bookmark", "즐겨찾기", R.drawable.icon_bookmark),
@@ -228,15 +228,28 @@ fun ConveniiApp(
 
         composable(route = ConveniiScreen.SearchMain.name,
             enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None }) {
+            exitTransition = { ExitTransition.None }) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.SearchMain.name)
+            }
             SearchMainScreen(
-                navController = navController
+                navController = navController,
+                viewModel = hiltViewModel(parentEntry)
             )
         }
 
-        composable(route = ConveniiScreen.MoreGS.name) {
-            MoreGSScreen(
+        composable(route = ConveniiScreen.SearchResult.name,
+            enterTransition = {
+                EnterTransition.None
+            },
+            exitTransition = { ExitTransition.None }
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(ConveniiScreen.SearchMain.name)
+            }
+            SearchResultScreen(
                 navController = navController,
+                viewModel = hiltViewModel(parentEntry)
             )
         }
 

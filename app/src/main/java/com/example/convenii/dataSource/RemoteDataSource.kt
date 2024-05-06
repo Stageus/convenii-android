@@ -53,6 +53,14 @@ interface RemoteDataSource {
 
     suspend fun postBookmark(productIdx: Int): Response<CommonResponseData.Response>
     suspend fun deleteBookmark(productIdx: Int): Response<CommonResponseData.Response>
+
+    //search -------------------------------------
+    suspend fun getSearchData(
+        keyword: String?,
+        eventFilter: String?,
+        categoryFilter: String?,
+        page: Int
+    ): Response<ProductModel.ProductCompanyResponseData>
 }
 
 
@@ -136,6 +144,16 @@ class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiServic
 
     override suspend fun deleteBookmark(productIdx: Int): Response<CommonResponseData.Response> {
         return apiService.deleteBookmark(productIdx)
+    }
+
+    //search -------------------------------------
+    override suspend fun getSearchData(
+        keyword: String?,
+        eventFilter: String?,
+        categoryFilter: String?,
+        page: Int
+    ): Response<ProductModel.ProductCompanyResponseData> {
+        return apiService.getSearchData(keyword, eventFilter, categoryFilter, page)
     }
 
 }
