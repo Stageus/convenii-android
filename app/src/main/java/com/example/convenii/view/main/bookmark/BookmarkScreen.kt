@@ -1,3 +1,4 @@
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
-import com.example.convenii.view.components.BottomNav
+import com.example.convenii.view.ConveniiScreen
 import com.example.convenii.view.components.MainCard
 import com.example.convenii.viewModel.main.bookmark.BookmarkViewModel
 
@@ -52,6 +53,14 @@ fun BookmarkScreen(
                 }
             }
 
+    }
+
+    BackHandler {
+        navController.navigate(ConveniiScreen.Home.route) {
+            popUpTo(navController.graph.id) {
+                inclusive = true
+            }
+        }
     }
 
 
@@ -81,10 +90,8 @@ fun BookmarkScreen(
                     }
                 })
         },
-        bottomBar = {
-            BottomNav(navController = navController)
-        }
-    ) { innerPadding ->
+
+        ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             if (bookmarkDataState.value is APIResponse.Success) {
                 if (bookmarkDataState.value.data!!.authStatus == "false") {

@@ -1,6 +1,5 @@
 package com.example.convenii.view.main.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -56,11 +55,7 @@ fun CUHomeScreen(
                     bookmarked = homeCUData.value.data!!.data.productList[i].bookmarked,
                     events = homeCUData.value.data!!.data.productList[i].events,
                     clickEvent = {
-                        Log.d(
-                            "GSHomeScreen",
-                            homeCUData.value.data!!.data.productList[i].events.toString()
-                        )
-                        // TODO
+                        navController.navigate("productDetail/${homeCUData.value.data!!.data.productList[i].idx}")
                     },
                     productImg = homeCUData.value.data!!.data.productList[i].productImg,
                 )
@@ -80,6 +75,7 @@ fun CUHomeScreen(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) {
+                    navController.navigate("more/2")
                 },
             textAlign = TextAlign.End
         )

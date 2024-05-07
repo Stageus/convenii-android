@@ -1,6 +1,7 @@
 package com.example.convenii.view.account
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,20 +56,21 @@ fun StartScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
     ) {
 
-        GlideImage(
-            imageModel = { R.drawable.test },
-            modifier = Modifier
-                .size(500.dp)
-                .align(Alignment.Center),
-        )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .align(Alignment.BottomCenter)
                 .padding(bottom = 32.dp)
         ) {
+            GlideImage(
+                imageModel = { R.drawable.image_main },
+                modifier = Modifier
+                    .size(500.dp)
+            )
+            Spacer(modifier = Modifier.height(100.dp))
             Button(
                 onClick = {
                     navController.navigate("SignIn")
@@ -108,7 +110,7 @@ fun StartScreen(
                     textDecoration = TextDecoration.Underline
                 ),
                 modifier = Modifier.clickable {
-                    openAlertDialog.value = true
+                    navController.navigate("home")
                 }
             )
 

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -67,251 +66,263 @@ fun ProductDetailScreen(
     LaunchedEffect(key1 = resultState) {
         if (resultState?.value == true) {
             Log.d("ProductDetailScreen", "isUpdate")
+            viewModel.getProductDetailData(productIdx!!.toInt())
         }
-
     }
 
-    if (productDetailDataState.value is APIResponse.Success) {
-        Column(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-                .fillMaxHeight()
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = {
-                        navController.popBackStack()
-                    },
-                    modifier = Modifier
-                        .width(30.dp)
-                        .height(30.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_back),
-                        contentDescription = null,
 
-                        )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                if (productDetailDataState.value is APIResponse.Success) {
-                    if (productDetailDataState.value.data!!.rankIdx == 2) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(9.dp))
-                                .clickable(enabled = true, onClick = {})
-                                .background(Color.White)
-                                .height(30.dp)
-                                .width(77.dp)
-                                .border(
-                                    BorderStroke(1.dp, Color(0xffE6E8EB)),
-                                    shape = RoundedCornerShape(9.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "상품 삭제",
-                                color = Color(0xff646F7C),
-                                fontSize = 11.sp,
-                                fontFamily = pretendard,
-                                fontWeight = FontWeight.Medium,
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(9.dp))
-                                .clickable(enabled = true, onClick = {})
-                                .background(Color.White)
-                                .height(30.dp)
-                                .width(77.dp)
-                                .border(
-                                    BorderStroke(1.dp, Color(0xffE6E8EB)),
-                                    shape = RoundedCornerShape(9.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "상품 수정",
-                                color = Color(0xff646F7C),
-                                fontSize = 11.sp,
-                                fontFamily = pretendard,
-                                fontWeight = FontWeight.Medium,
-                            )
-                        }
-                    }
-                }
-
-            }
-            //메인 컬럼
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        if (productDetailDataState.value is APIResponse.Success) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .padding(top = 16.dp)
-            ) {
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)
 
-                GlideImage(
-                    imageModel = { productDetailDataState.value.data!!.data.product.productImg },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .fillMaxWidth(0.41f)
-                        .aspectRatio(1f)
-                        .align(Alignment.CenterHorizontally),
-                )
-                Spacer(modifier = Modifier.height(20.dp))
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    IconButton(
+                        onClick = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier
+                            .width(30.dp)
+                            .height(30.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_back),
+                            contentDescription = null,
+
+                            )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    if (productDetailDataState.value is APIResponse.Success) {
+                        if (productDetailDataState.value.data!!.rankIdx == 2) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(9.dp))
+                                    .clickable(enabled = true, onClick = {})
+                                    .background(Color.White)
+                                    .height(30.dp)
+                                    .width(77.dp)
+                                    .border(
+                                        BorderStroke(1.dp, Color(0xffE6E8EB)),
+                                        shape = RoundedCornerShape(9.dp)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "상품 삭제",
+                                    color = Color(0xff646F7C),
+                                    fontSize = 11.sp,
+                                    fontFamily = pretendard,
+                                    fontWeight = FontWeight.Medium,
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(9.dp))
+                                    .clickable(enabled = true, onClick = {})
+                                    .background(Color.White)
+                                    .height(30.dp)
+                                    .width(77.dp)
+                                    .border(
+                                        BorderStroke(1.dp, Color(0xffE6E8EB)),
+                                        shape = RoundedCornerShape(9.dp)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "상품 수정",
+                                    color = Color(0xff646F7C),
+                                    fontSize = 11.sp,
+                                    fontFamily = pretendard,
+                                    fontWeight = FontWeight.Medium,
+                                )
+                            }
+                        }
+                    }
+
+                }
+                //메인 컬럼
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                        .padding(top = 16.dp)
+                ) {
+
+                    GlideImage(
+                        imageModel = { productDetailDataState.value.data!!.data.product.productImg },
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .fillMaxWidth(0.41f)
+                            .aspectRatio(1f)
+                            .align(Alignment.CenterHorizontally),
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = productDetailDataState.value.data!!.data.product.name,
+                            fontSize = 18.sp,
+                            fontFamily = pretendard,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon( // 별점
+                            painter = painterResource(id = R.drawable.icon_fill_star),
+                            contentDescription = null,
+                            tint = Color(0xffFFD643)
+                        )
+                        Text(
+                            text = productDetailDataState.value.data!!.data.product.score,
+                            fontSize = 16.sp,
+                            fontFamily = pretendard,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(start = 5.dp, end = 10.dp)
+                        )
+                    }
+                    Text( //가격
+                        text = "${productDetailDataState.value.data!!.data.product.price}원",
+                        fontSize = 16.sp,
+                        fontFamily = pretendard,
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    if (productDetailDataState.value.data!!.rankIdx != 0) {
+                        Row {
+                            Spacer(modifier = Modifier.weight(1f))
+                            BookmarkBtn(
+                                bookmarked = bookmarked.value,
+                                onClick = {
+                                    if (bookmarked.value) {
+                                        viewModel.deleteBookmark(productIdx!!.toInt())
+                                    } else {
+                                        viewModel.postBookmark(productIdx!!.toInt())
+                                    }
+                                })
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp)
+                    ) {
+                        for (event in productDetailDataState.value.data!!.data.product.eventInfo[0].events) {
+                            val eventType: String = when (event.eventIdx) {
+                                1 -> "1 + 1"
+                                2 -> "2 + 1"
+                                3 -> "할인"
+                                4 -> "덤증정"
+                                5 -> "기타"
+                                else -> "행사 없음"
+                            }
+                            when (event.companyIdx) {
+                                1 -> {
+                                    EventRow(
+                                        icon = R.drawable.image_gs25,
+                                        event = eventType
+                                    )
+                                }
+
+                                2 -> {
+                                    EventRow(
+                                        icon = R.drawable.image_cu,
+                                        event = eventType
+                                    )
+                                }
+
+                                3 -> {
+                                    EventRow(
+                                        icon = R.drawable.image_emart24,
+                                        event = eventType
+                                    )
+                                }
+
+                            }
+
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
                     Text(
-                        text = productDetailDataState.value.data!!.data.product.name,
+                        text = "할인 히스토리",
                         fontSize = 18.sp,
                         fontFamily = pretendard,
                         fontWeight = FontWeight.Bold
                     )
-
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon( // 별점
-                        painter = painterResource(id = R.drawable.icon_fill_star),
-                        contentDescription = null,
-                        tint = Color(0xffFFD643)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Log.d(
+                        "productDetailData",
+                        productDetailDataState.value.data!!.data.product.eventInfo.toString()
                     )
+                    val originalEventData =
+                        productDetailDataState.value.data!!.data.product.eventInfo
+                    val tableData = viewModel.convertEventData(originalEventData)
+
+
+                    StaticDataTable(data = tableData)
+
+                    Spacer(modifier = Modifier.height(40.dp))
                     Text(
-                        text = productDetailDataState.value.data!!.data.product.score,
-                        fontSize = 16.sp,
+                        text = "리뷰 모두보기",
+                        fontSize = 12.sp,
                         fontFamily = pretendard,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(start = 5.dp, end = 10.dp)
-                    )
-                }
-                Text( //가격
-                    text = "${productDetailDataState.value.data!!.data.product.price}원",
-                    fontSize = 16.sp,
-                    fontFamily = pretendard,
-                    fontWeight = FontWeight.Normal
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Row {
-                    Spacer(modifier = Modifier.weight(1f))
-                    BookmarkBtn(
-                        bookmarked = bookmarked.value,
-                        onClick = {
-                            if (bookmarked.value) {
-                                viewModel.deleteBookmark(productIdx!!.toInt())
-                            } else {
-                                viewModel.postBookmark(productIdx!!.toInt())
-                            }
-                        })
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp)
-                ) {
-                    for (event in productDetailDataState.value.data!!.data.product.eventInfo[0].events) {
-                        when (event.companyIdx) {
-                            1 -> {
-                                EventRow(
-                                    icon = R.drawable.image_gs25,
-                                    event = event.price ?: "행사없음"
-                                )
-                            }
-
-                            2 -> {
-                                EventRow(
-                                    icon = R.drawable.image_cu,
-                                    event = event.price ?: "행사없음"
-                                )
-                            }
-
-                            3 -> {
-                                EventRow(
-                                    icon = R.drawable.image_emart24,
-                                    event = event.price ?: "행사없음"
-                                )
-                            }
-
+                        fontWeight = FontWeight.Normal,
+                        color = Color(0xff7D8791),
+                        modifier = Modifier.clickable {
+                            navController.navigate("reviewDetail/${productIdx}")
                         }
+                    )
 
+                    Column {
+
+                        reviewData.value.forEachIndexed { index, it ->
+                            if (index > 0) Spacer(modifier = Modifier.height(10.dp))
+                            CommentUi(
+                                nickname = it.nickname,
+                                star = it.score,
+                                comment = it.content,
+                                date = it.createdAt
+                            )
+                        }
                     }
-                }
 
-                Spacer(modifier = Modifier.height(40.dp))
-
-                Text(
-                    text = "할인 히스토리",
-                    fontSize = 18.sp,
-                    fontFamily = pretendard,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Log.d(
-                    "productDetailData",
-                    productDetailDataState.value.data!!.data.product.eventInfo.toString()
-                )
-                val originalEventData =
-                    productDetailDataState.value.data!!.data.product.eventInfo
-                val tableData = viewModel.convertEventData(originalEventData)
-
-
-                StaticDataTable(data = tableData)
-
-                Spacer(modifier = Modifier.height(40.dp))
-                Text(
-                    text = "리뷰 모두보기",
-                    fontSize = 12.sp,
-                    fontFamily = pretendard,
-                    fontWeight = FontWeight.Normal,
-                    color = Color(0xff7D8791),
-                    modifier = Modifier.clickable {
-                        navController.navigate("reviewDetail/${productIdx}")
-                    }
-                )
-
-                Column {
-
-                    reviewData.value.forEachIndexed { index, it ->
-                        if (index > 0) Spacer(modifier = Modifier.height(10.dp))
-                        CommentUi(
-                            nickname = it.nickname,
-                            star = it.score,
-                            comment = it.content,
-                            date = it.createdAt
+                    if (productDetailDataState.value.data!!.rankIdx != 0) {
+                        ConfirmBtn(
+                            text = "리뷰 남기기",
+                            enabled = true,
+                            onClick = {
+                                navController.navigate("reviewAdd")
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp, bottom = 20.dp)
                         )
                     }
-                }
-
-                if (productDetailDataState.value.data!!.rankIdx != 0) {
-                    ConfirmBtn(
-                        text = "리뷰 남기기",
-                        enabled = true,
-                        onClick = {
-                            navController.navigate("reviewAdd")
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 20.dp, bottom = 20.dp)
-                    )
-                }
-            } // 메인 컬럼 끝
+                } // 메인 컬럼 끝
+            }
+        } else {
+            // 로딩
         }
         // success 끝
-    } else {
-        // 로딩
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-        )
     }
 }
 

@@ -57,7 +57,7 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    fun verifyEmailSend(email: String) {
+    fun verifyEmailSend(email: String) { // 이메일 인증번호 전송
         viewModelScope.launch {
             _isEmailSend.value = accountRepository.verifyEmailSend(email)
             if (isEmailSend.value is APIResponse.Success) {
@@ -74,9 +74,13 @@ class RegisterViewModel @Inject constructor(
         _isEmailSend.value = APIResponse.Empty()
     }
 
-    fun verifyEmailCheck(verificationCode: String) {
+    fun verifyEmailCheck(verificationCode: String) { // 이메일 인증번호 확인
         viewModelScope.launch {
             _isEmailCheck.value = accountRepository.verifyEmailCheck(email.value, verificationCode)
+
+            if (_isEmailCheck.value is APIResponse.Error) {
+                Log.d("RegisterViewModel", _isEmailCheck.value.message.toString())
+            }
 
         }
     }

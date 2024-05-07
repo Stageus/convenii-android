@@ -48,8 +48,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     color = Color.White,
-
-                    ) {
+                ) {
                     if (startDestination.isNotEmpty()) {
                         ConveniiApp(startDestination)
                     }

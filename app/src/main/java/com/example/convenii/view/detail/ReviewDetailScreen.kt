@@ -72,7 +72,9 @@ fun ReviewDetailScreen(
                     containerColor = Color.White,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_back),
                             contentDescription = null

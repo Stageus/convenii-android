@@ -6,6 +6,7 @@ import com.example.convenii.model.account.SignInModel
 import com.example.convenii.model.detail.ProductDetailModel
 import com.example.convenii.model.detail.ReviewModel
 import com.example.convenii.model.main.ProductModel
+import com.example.convenii.model.profile.ProfileModel
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -86,6 +87,13 @@ interface ApiService {
         @Query("categoryFilter") categoryFilter: String?,
         @Query("page") page: Int
     ): retrofit2.Response<ProductModel.ProductCompanyResponseData>
+
+    //profile -------------------------------------
+    @GET("account")
+    suspend fun getProfileData(): retrofit2.Response<ProfileModel.ProfileResponseData>
+
+    @DELETE("account")
+    suspend fun deleteAccount(): retrofit2.Response<CommonResponseData.Response>
 
 
 }

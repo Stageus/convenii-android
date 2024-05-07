@@ -104,6 +104,7 @@ fun MoreScreen(
                     if (it != 0) {
                         Spacer(modifier = Modifier.padding(3.dp))
                     }
+
                     MainCard(
                         name = moreData.value[it].name,
                         price = moreData.value[it].price,
@@ -114,6 +115,10 @@ fun MoreScreen(
                         },
                         productImg = moreData.value[it].productImg,
                     )
+
+                    if (it == moreData.value.size - 1) {
+                        Spacer(modifier = Modifier.padding(10.dp))
+                    }
                 }
             }
 

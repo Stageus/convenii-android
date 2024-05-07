@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -51,6 +52,7 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun AccountInputField(
     keyboardOptions: KeyboardOptions,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     isPassword: Boolean,
     text: String,
     modifier: Modifier = Modifier,
@@ -65,6 +67,7 @@ fun AccountInputField(
         },
         modifier = modifier,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         placeholder = {
             Text(

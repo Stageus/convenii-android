@@ -1,6 +1,5 @@
 package com.example.convenii.view.main.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -56,11 +55,8 @@ fun EMartHomeScreen(
                     bookmarked = homeEMartData.value.data!!.data.productList[i].bookmarked,
                     events = homeEMartData.value.data!!.data.productList[i].events,
                     clickEvent = {
-                        Log.d(
-                            "GSHomeScreen",
-                            homeEMartData.value.data!!.data.productList[i].events.toString()
-                        )
-                        // TODO
+                        navController.navigate("productDetail/${homeEMartData.value.data!!.data.productList[i].idx}")
+
                     },
                     productImg = homeEMartData.value.data!!.data.productList[i].productImg,
                 )

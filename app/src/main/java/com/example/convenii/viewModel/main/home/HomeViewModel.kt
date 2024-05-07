@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.convenii.model.APIResponse
 import com.example.convenii.model.main.ProductModel
+import com.example.convenii.model.profile.ProfileModel
 import com.example.convenii.repository.MainRepository
 import com.example.convenii.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,6 +38,14 @@ class HomeViewModel @Inject constructor(
 
     private val _authStatus = MutableStateFlow("false")
     val authStatus: StateFlow<String> = _authStatus
+
+    private val _profileDataState =
+        MutableStateFlow<APIResponse<ProfileModel.ProfileResponseData>>(APIResponse.Empty())
+    val profileDataState: StateFlow<APIResponse<ProfileModel.ProfileResponseData>> =
+        _profileDataState
+    private val _profileData =
+        MutableStateFlow(ProfileModel.ProfileData(name = "", email = "", createdAt = "", idx = 0))
+    val profileData: StateFlow<ProfileModel.ProfileData> = _profileData
 
 
     fun getHomeProductCompanyData(
@@ -83,6 +92,28 @@ class HomeViewModel @Inject constructor(
     fun deleteToken() {
         viewModelScope.launch {
             tokenRepository.deleteToken()
+        }
+    }
+
+
+    //profile
+    fun getProfileData() {
+        viewModelScope.launch {
+            _profileDataState.value = mainRepository.getProfile()
+            if (_profileDataState.value is APIResponse.Success) {
+                Log.d(
+                    "HomeViewModel",
+                    (_profileDataState.value as APIResponse.Success).data.toString()
+                )
+                _authStatus.value =
+                    (_profileDataState.value as APIResponse.Success).data!!.authStatus
+                _profileData.value = (_profileDataState.value as APIResponse.Success).data!!.data
+            } else {
+                Log.d(
+                    "HomeViewModel",
+                    "${_profileDataState.value.message} ${_profileDataState.value.errorCode}"
+                )
+            }
         }
     }
 }

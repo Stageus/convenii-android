@@ -6,6 +6,7 @@ import com.example.convenii.model.account.SignInModel
 import com.example.convenii.model.detail.ProductDetailModel
 import com.example.convenii.model.detail.ReviewModel
 import com.example.convenii.model.main.ProductModel
+import com.example.convenii.model.profile.ProfileModel
 import com.example.convenii.service.ApiService
 import retrofit2.Response
 import javax.inject.Inject
@@ -61,6 +62,10 @@ interface RemoteDataSource {
         categoryFilter: String?,
         page: Int
     ): Response<ProductModel.ProductCompanyResponseData>
+
+    //profile -------------------------------------
+    suspend fun getProfileData(): Response<ProfileModel.ProfileResponseData>
+    suspend fun deleteAccount(): Response<CommonResponseData.Response>
 }
 
 
@@ -156,4 +161,12 @@ class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiServic
         return apiService.getSearchData(keyword, eventFilter, categoryFilter, page)
     }
 
+    //profile -------------------------------------
+    override suspend fun getProfileData(): Response<ProfileModel.ProfileResponseData> {
+        return apiService.getProfileData()
+    }
+
+    override suspend fun deleteAccount(): Response<CommonResponseData.Response> {
+        return apiService.deleteAccount()
+    }
 }

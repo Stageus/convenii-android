@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
@@ -24,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.ui.theme.pretendard
-import com.example.convenii.view.components.BottomNav
 import com.example.convenii.view.components.CustomConfirmDialog
 import com.example.convenii.viewModel.main.home.HomeViewModel
 import kotlinx.coroutines.launch
@@ -61,68 +59,59 @@ fun HomeScreen(
         }
     }
 
-    Scaffold(
-        bottomBar = {
-            BottomNav(navController = navController)
-        },
-        modifier = Modifier.fillMaxSize()
-    ) {
 
-
-        Column {
-            TabRow(
-                selectedTabIndex = pagerState.currentPage,
-                containerColor = Color.White,
-                divider = {
+    Column {
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            containerColor = Color.White,
+            divider = {
+            },
+            indicator = { tabPositions ->
+                SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                    color = Color.Black,
+                    height = 1.dp
+                )
+            },
+            contentColor = Color.Black,
+        ) {
+            tabTitles.forEachIndexed { index, title ->
+                Tab(selected = pagerState.currentPage == index, onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
                 },
-                indicator = { tabPositions ->
-                    SecondaryIndicator(
-                        modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                        color = Color.Black,
-                        height = 1.dp
-                    )
-                },
-                contentColor = Color.Black,
-            ) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(selected = pagerState.currentPage == index, onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                        text = {
-                            Text(
-                                text = tabTitles[index],
-                                modifier = Modifier.padding(16.dp),
+                    text = {
+                        Text(
+                            text = tabTitles[index],
+                            modifier = Modifier.padding(16.dp),
+                            color = Color.Black,
+                            style = androidx.compose.ui.text.TextStyle(
                                 color = Color.Black,
-                                style = androidx.compose.ui.text.TextStyle(
-                                    color = Color.Black,
-                                    fontSize = 16.sp,
-                                    fontFamily = pretendard,
-                                    fontWeight = FontWeight.Medium
-                                )
+                                fontSize = 16.sp,
+                                fontFamily = pretendard,
+                                fontWeight = FontWeight.Medium
                             )
-                        } //tab 표시 이름
-                    )
-                }
+                        )
+                    } //tab 표시 이름
+                )
             }
+        }
 
-            HorizontalPager(state = pagerState) { page ->
+        HorizontalPager(state = pagerState) { page ->
 
-                when (page) {
-                    0 -> {
-                        GSHomeScreen(navController, viewModel)
-                    }
-
-                    1 -> {
-                        CUHomeScreen(navController = navController, viewModel = viewModel)
-                    }
-
-                    2 -> {
-                        EMartHomeScreen(navController = navController, viewModel = viewModel)
-                    }
+            when (page) {
+                0 -> {
+                    GSHomeScreen(navController, viewModel)
                 }
 
+                1 -> {
+                    CUHomeScreen(navController = navController, viewModel = viewModel)
+                }
+
+                2 -> {
+                    EMartHomeScreen(navController = navController, viewModel = viewModel)
+                }
             }
 
 

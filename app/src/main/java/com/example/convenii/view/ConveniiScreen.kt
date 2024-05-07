@@ -7,14 +7,21 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.convenii.R
@@ -25,6 +32,7 @@ import com.example.convenii.view.account.register.Register2Screen
 import com.example.convenii.view.account.register.Register3Screen
 import com.example.convenii.view.account.register.Register4Screen
 import com.example.convenii.view.account.register.Register5Screen
+import com.example.convenii.view.components.BottomNav
 import com.example.convenii.view.detail.ProductDetailScreen
 import com.example.convenii.view.detail.ReviewAddScreen
 import com.example.convenii.view.detail.ReviewDetailScreen
@@ -95,193 +103,213 @@ fun ConveniiApp(
     startDestination: String
 ) {
     val navController = rememberNavController()
-
-
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        enterTransition = { slideInVertically(initialOffsetY = { 500 }) },
-        exitTransition = { ExitTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        popExitTransition = { ExitTransition.None }
-    ) {
-
-
-        composableWithAnimation(route = ConveniiScreen.Start.name) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.Start.name)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    Scaffold(
+        bottomBar = {
+            if (currentRoute in listOf(
+                    ConveniiScreen.Home.name,
+                    ConveniiScreen.SearchMain.name,
+                    ConveniiScreen.Bookmark.name,
+                    ConveniiScreen.Profile.name
+                )
+            ) {
+                BottomNav(navController = navController)
             }
-            StartScreen(
-                navController = navController,
-            )
-        }
-        composableWithAnimation(route = ConveniiScreen.SignIn.name) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.Start.name)
-            }
-            SignInScreen(
-                navController = navController,
-                parentEntry = parentEntry
-            )
-        }
-        composableWithAnimation(route = ConveniiScreen.Register1.name) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.Start.name)
-            }
-            Register1Screen(
-                navController = navController,
-                viewModel = hiltViewModel(parentEntry)
-            )
-        }
-
-        composableWithAnimation(route = ConveniiScreen.Register2.name) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.Start.name)
-            }
-            Register2Screen(
-                navController = navController,
-                viewModel = hiltViewModel(parentEntry)
-
-            )
-        }
-
-        composableWithAnimation(route = ConveniiScreen.Register3.name) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.Start.name)
-            }
-
-            Register3Screen(
-                navController = navController,
-                viewModel = hiltViewModel(parentEntry)
-
-            )
-        }
-
-        composableWithAnimation(route = ConveniiScreen.Register4.name) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.Start.name)
-            }
-            Register4Screen(
-                navController = navController,
-                viewModel = hiltViewModel(parentEntry)
-
-            )
-        }
-
-        composableWithAnimation(route = ConveniiScreen.Register5.name) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.Start.name)
-            }
-            Register5Screen(
-                navController = navController,
-                viewModel = hiltViewModel(parentEntry)
-            )
-        }
-
-        composable(route = ConveniiScreen.Home.name,
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None }) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.Home.name)
-            }
-            HomeScreen(
-                navController = navController,
-                viewModel = hiltViewModel(parentEntry)
-            )
-        }
-
-        composable(
-            route = ConveniiScreen.ProductDetail.route,
-            arguments = listOf(navArgument("productIdx") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.ProductDetail.route)
-            }
-            val productIdx = backStackEntry.arguments?.getString("productIdx")
-            ProductDetailScreen(
-                navController = navController,
-                productIdx = productIdx,
-                viewModel = hiltViewModel(parentEntry)
-            )
-        }
-
-        composable(
-            route = ConveniiScreen.ReviewDetail.route,
-            arguments = listOf(navArgument("productIdx") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val productIdx = backStackEntry.arguments?.getString("productIdx")
-            ReviewDetailScreen(
-                navController = navController,
-                productIdx = productIdx
-            )
-        }
-
-        composable(route = ConveniiScreen.ReviewAdd.name) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.ProductDetail.route)
-            }
-            ReviewAddScreen(
-                navController = navController,
-                viewModel = hiltViewModel(parentEntry)
-            )
-        }
-
-        composable(route = ConveniiScreen.SearchMain.name,
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None }) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.SearchMain.name)
-            }
-            SearchMainScreen(
-                navController = navController,
-                viewModel = hiltViewModel(parentEntry)
-            )
-        }
-
-        composable(route = ConveniiScreen.SearchResult.name,
-            enterTransition = {
-                EnterTransition.None
-            },
-            exitTransition = { ExitTransition.None }
-        ) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(ConveniiScreen.SearchMain.name)
-            }
-            SearchResultScreen(
-                navController = navController,
-                viewModel = hiltViewModel(parentEntry)
-            )
-        }
-
-        composable(
-            route = ConveniiScreen.More.route,
-            arguments = listOf(navArgument("type") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val type = backStackEntry.arguments?.getString("type")
-            MoreScreen(
-                navController = navController,
-                type = type
-            )
-        }
-
-        composable(
-            route = ConveniiScreen.Bookmark.name,
-            enterTransition = { EnterTransition.None },
+        },
+        modifier = Modifier.background(color = Color.White)
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            enterTransition = { slideInVertically(initialOffsetY = { 500 }) },
             exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
+            modifier = Modifier.padding(innerPadding)
         ) {
-            BookmarkScreen(
-                navController = navController
-            )
-        }
 
-        composable(
-            route = ConveniiScreen.Profile.name,
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-        ) {
-            ProfileScreen(
-                navController = navController
-            )
+            composableWithAnimation(route = ConveniiScreen.Start.name) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.Start.name)
+                }
+                StartScreen(
+                    navController = navController,
+                )
+            }
+            composableWithAnimation(route = ConveniiScreen.SignIn.name) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.SignIn.name)
+                }
+                SignInScreen(
+                    navController = navController,
+                    parentEntry = parentEntry
+                )
+            }
+            composableWithAnimation(route = ConveniiScreen.Register1.name) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.SignIn.name)
+                }
+                Register1Screen(
+                    navController = navController,
+                    viewModel = hiltViewModel(parentEntry)
+                )
+            }
+
+            composableWithAnimation(route = ConveniiScreen.Register2.name) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.SignIn.name)
+                }
+                Register2Screen(
+                    navController = navController,
+                    viewModel = hiltViewModel(parentEntry)
+
+                )
+            }
+
+            composableWithAnimation(route = ConveniiScreen.Register3.name) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.SignIn.name)
+                }
+
+                Register3Screen(
+                    navController = navController,
+                    viewModel = hiltViewModel(parentEntry)
+
+                )
+            }
+
+            composableWithAnimation(route = ConveniiScreen.Register4.name) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.SignIn.name)
+                }
+                Register4Screen(
+                    navController = navController,
+                    viewModel = hiltViewModel(parentEntry)
+
+                )
+            }
+
+            composableWithAnimation(route = ConveniiScreen.Register5.name) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.SignIn.name)
+                }
+                Register5Screen(
+                    navController = navController,
+                    viewModel = hiltViewModel(parentEntry)
+                )
+            }
+
+            composable(route = ConveniiScreen.Home.name,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None }) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.Home.name)
+                }
+                HomeScreen(
+                    navController = navController,
+                    viewModel = hiltViewModel(parentEntry)
+                )
+            }
+
+            composable(
+                route = ConveniiScreen.ProductDetail.route,
+                arguments = listOf(navArgument("productIdx") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.ProductDetail.route)
+                }
+                val productIdx = backStackEntry.arguments?.getString("productIdx")
+                ProductDetailScreen(
+                    navController = navController,
+                    productIdx = productIdx,
+                    viewModel = hiltViewModel(parentEntry)
+                )
+            }
+
+            composable(
+                route = ConveniiScreen.ReviewDetail.route,
+                arguments = listOf(navArgument("productIdx") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val productIdx = backStackEntry.arguments?.getString("productIdx")
+                ReviewDetailScreen(
+                    navController = navController,
+                    productIdx = productIdx
+                )
+            }
+
+            composable(route = ConveniiScreen.ReviewAdd.name) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.ProductDetail.route)
+                }
+                ReviewAddScreen(
+                    navController = navController,
+                    viewModel = hiltViewModel(parentEntry)
+                )
+            }
+
+            composable(route = ConveniiScreen.SearchMain.name,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None }) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.SearchMain.name)
+                }
+                SearchMainScreen(
+                    navController = navController,
+                    viewModel = hiltViewModel(parentEntry)
+                )
+            }
+
+            composable(route = ConveniiScreen.SearchResult.name,
+                enterTransition = {
+                    EnterTransition.None
+                },
+                exitTransition = { ExitTransition.None }
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.SearchMain.name)
+                }
+                SearchResultScreen(
+                    navController = navController,
+                    viewModel = hiltViewModel(parentEntry)
+                )
+            }
+
+            composable(
+                route = ConveniiScreen.More.route,
+                arguments = listOf(navArgument("type") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val type = backStackEntry.arguments?.getString("type")
+                MoreScreen(
+                    navController = navController,
+                    type = type
+                )
+            }
+
+            composable(
+                route = ConveniiScreen.Bookmark.name,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+            ) {
+                BookmarkScreen(
+                    navController = navController
+                )
+            }
+
+            composable(
+                route = ConveniiScreen.Profile.name,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(ConveniiScreen.Profile.route)
+                }
+                ProfileScreen(
+                    navController = navController,
+                    registerViewModel = hiltViewModel(parentEntry),
+                    profileViewModel = hiltViewModel(parentEntry)
+                )
+            }
         }
     }
 }
