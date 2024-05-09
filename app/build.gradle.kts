@@ -85,4 +85,6 @@ dependencies {
     //datastore
     implementation(libs.dataStore)
 
+    implementation(libs.okhttp)
+
 }

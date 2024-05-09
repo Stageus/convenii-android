@@ -45,6 +45,9 @@ class SearchViewModel @Inject constructor(
     private val _searchHistory = MutableStateFlow<List<String>>(emptyList())
     val searchHistory = _searchHistory.asStateFlow()
 
+    private val _rankIdx = MutableStateFlow(0)
+    val rankIdx = _rankIdx.asStateFlow()
+
     fun getSearchData(
     ) {
         val eventFilter: MutableList<Int> = selectedEventFilter.value.run {
@@ -67,12 +70,6 @@ class SearchViewModel @Inject constructor(
             }
         }
 
-        val tmp = eventFilter.toString()
-
-        Log.d(
-            "SearchViewModel",
-            "getSearchData: $tmp $categoryFilter ${keyword.value} ${_page.value}"
-        )
         viewModelScope.launch {
             _searchDataState.value = searchRepository.getSearchData(
                 keyword = keyword.value,
@@ -81,10 +78,7 @@ class SearchViewModel @Inject constructor(
                 categoryFilter = categoryFilter.toString()
             )
             if (_searchDataState.value is APIResponse.Success) {
-                Log.d(
-                    "SearchViewModel",
-                    "getSearchData: ${(_searchDataState.value as APIResponse.Success).data!!.data.productList}"
-                )
+                _rankIdx.value = (_searchDataState.value as APIResponse.Success).data!!.rankIdx
                 _authState.value = (_searchDataState.value as APIResponse.Success).data!!.authStatus
                 val newData =
                     (_searchDataState.value as APIResponse.Success).data!!.data.productList

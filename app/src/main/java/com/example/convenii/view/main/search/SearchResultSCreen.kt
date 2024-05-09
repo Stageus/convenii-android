@@ -58,6 +58,8 @@ fun SearchResultScreen(
     val searchData = viewModel.searchData.collectAsState()
     val lazyListState = rememberLazyListState()
     val keyword by viewModel.keyword.collectAsState()
+    val rankIdx by viewModel.rankIdx.collectAsState()
+
 
     Box(
         modifier = Modifier
@@ -80,29 +82,33 @@ fun SearchResultScreen(
                     )
                 )
 
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(9.dp))
-                        .clickable(enabled = true, onClick = {})
-                        .background(Color.White)
-                        .height(30.dp)
-                        .width(77.dp)
-                        .border(
-                            BorderStroke(1.dp, Color(0xffE6E8EB)),
-                            shape = RoundedCornerShape(9.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "상품 추가",
-                        color = Color(0xff646F7C),
-                        fontSize = 11.sp,
-                        fontFamily = pretendard,
-                        fontWeight = FontWeight.Medium,
-                    )
+                if (rankIdx == 2) {
+
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(9.dp))
+                            .clickable(enabled = true, onClick = {
+                                navController.navigate("addProduct")
+                            })
+                            .background(Color.White)
+                            .height(30.dp)
+                            .width(77.dp)
+                            .border(
+                                BorderStroke(1.dp, Color(0xffE6E8EB)),
+                                shape = RoundedCornerShape(9.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "상품 추가",
+                            color = Color(0xff646F7C),
+                            fontSize = 11.sp,
+                            fontFamily = pretendard,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    }
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(

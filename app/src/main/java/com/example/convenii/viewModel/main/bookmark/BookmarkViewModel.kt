@@ -31,6 +31,12 @@ class BookmarkViewModel @Inject constructor(
 
     private var _page = 1
 
+    fun resetData() {
+        _bookmarkData.value = mutableListOf()
+        _page = 1
+        _isDataEnded.value = false
+    }
+
     fun getBookmarkData() {
         viewModelScope.launch {
             _bookmarkDataState.value = bookmarkRepository.getAllBookmark(

@@ -37,6 +37,7 @@ import com.example.convenii.R
 import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.ConveniiScreen
+import com.example.convenii.view.components.BottomNav
 import com.example.convenii.view.components.CustomConfirmDialog
 import com.example.convenii.view.components.CustomSelectDialog
 import com.example.convenii.viewModel.account.RegisterViewModel
@@ -154,8 +155,11 @@ fun ProfileScreen(
                     }
                 })
         },
+        bottomBar = {
+            BottomNav(navController = navController)
+        }
 
-        ) { innerPadding ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .padding(innerPadding)

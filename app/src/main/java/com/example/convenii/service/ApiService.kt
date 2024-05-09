@@ -7,10 +7,15 @@ import com.example.convenii.model.detail.ProductDetailModel
 import com.example.convenii.model.detail.ReviewModel
 import com.example.convenii.model.main.ProductModel
 import com.example.convenii.model.profile.ProfileModel
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -62,6 +67,11 @@ interface ApiService {
         @Body body: ReviewModel.PostReviewRequestData
     ): retrofit2.Response<CommonResponseData.Response>
 
+    @DELETE("product/{productIdx}")
+    suspend fun deleteProduct(
+        @Path("productIdx") productIdx: Int
+    ): retrofit2.Response<CommonResponseData.Response>
+
     //bookmark -------------------------------------
     @GET("bookmark/all")
     suspend fun getAllBookmark(
@@ -94,6 +104,28 @@ interface ApiService {
 
     @DELETE("account")
     suspend fun deleteAccount(): retrofit2.Response<CommonResponseData.Response>
+
+    //product -------------------------------------
+    @Multipart
+    @POST("product")
+    suspend fun addProduct(
+        @Part("categoryIdx") categoryIdx: Int,
+        @Part("name") name: RequestBody,
+        @Part("price") price: RequestBody,
+        @Part image: MultipartBody.Part,
+        @Part parts: List<MultipartBody.Part>
+    ): retrofit2.Response<CommonResponseData.Response>
+
+    @Multipart
+    @PUT("product/{productIdx}")
+    suspend fun editProduct(
+        @Path("productIdx") productIdx: Int,
+        @Part("categoryIdx") categoryIdx: Int,
+        @Part("name") name: RequestBody,
+        @Part("price") price: RequestBody,
+        @Part image: MultipartBody.Part?,
+        @Part parts: List<MultipartBody.Part>
+    ): retrofit2.Response<CommonResponseData.Response>
 
 
 }

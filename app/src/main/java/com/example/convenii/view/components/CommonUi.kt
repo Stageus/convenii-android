@@ -3,6 +3,7 @@
 package com.example.convenii.view.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -65,6 +66,7 @@ fun AccountInputField(
         onValueChange = {
             valueChange(it)
         },
+        maxLines = 1,
         modifier = modifier,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
@@ -216,7 +218,7 @@ fun MainCard(
                     val event: String = when (company.eventIdx) {
                         1 -> "1 + 1"
                         2 -> "2 + 1"
-                        3 -> "할인"
+                        3 -> company.price.toString() + "원"
                         4 -> "덤증정"
                         5 -> "기타"
                         else -> "행사 없음"
@@ -226,10 +228,10 @@ fun MainCard(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.align(Alignment.End)
                         ) {
-                            GlideImage(
-                                imageModel = { R.drawable.image_gs25 },
-                                modifier = Modifier
-                                    .size(25.dp)
+                            Image(
+                                painter = painterResource(id = R.drawable.image_gs25),
+                                contentDescription = null,
+                                modifier = Modifier.size(25.dp)
                             )
                             Text(
                                 text = event,
@@ -245,10 +247,10 @@ fun MainCard(
                             modifier = Modifier.align(Alignment.End)
 
                         ) {
-                            GlideImage(
-                                imageModel = { R.drawable.image_cu },
-                                modifier = Modifier
-                                    .size(25.dp)
+                            Image(
+                                painter = painterResource(id = R.drawable.image_cu),
+                                contentDescription = null,
+                                modifier = Modifier.size(25.dp)
                             )
                             Text(
                                 text = event,
@@ -263,10 +265,10 @@ fun MainCard(
                             modifier = Modifier.align(Alignment.End)
 
                         ) {
-                            GlideImage(
-                                imageModel = { R.drawable.image_emart24 },
-                                modifier = Modifier
-                                    .size(25.dp)
+                            Image(
+                                painter = painterResource(id = R.drawable.image_emart24),
+                                contentDescription = null,
+                                modifier = Modifier.size(25.dp)
                             )
                             Text(
                                 text = event,
@@ -434,7 +436,8 @@ fun CustomSelectDialog(
     mainTitle: String,
     subTitle: String,
     confirmBtnText: String,
-    cancelBtnText: String
+    cancelBtnText: String,
+    isBtnBlue: Boolean = false
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -513,7 +516,9 @@ fun CustomSelectDialog(
                             .height(52.dp)
                             .weight(1f),
                         shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
+                        colors = if (isBtnBlue) ButtonDefaults.buttonColors(
+                            containerColor = Color(0xff1F8CE6),
+                        ) else ButtonDefaults.buttonColors(
                             containerColor = Color(0xffF83A41),
                         )
                     ) {

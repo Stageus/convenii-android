@@ -33,7 +33,8 @@ class ProductModel {
 
     data class ProductCompanyResponseData(
         val data: ProductListData,
-        val authStatus: String
+        val authStatus: String,
+        val rankIdx: Int
 
     )
 

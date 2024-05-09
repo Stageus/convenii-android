@@ -47,38 +47,57 @@ fun CUHomeScreen(
     ) {
         if (homeCUData.value is APIResponse.Success) {
 
-            for (i in 0 until 3) {
-                if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
-                MainCard(
-                    name = homeCUData.value.data!!.data.productList[i].name,
-                    price = homeCUData.value.data!!.data.productList[i].price,
-                    bookmarked = homeCUData.value.data!!.data.productList[i].bookmarked,
-                    events = homeCUData.value.data!!.data.productList[i].events,
-                    clickEvent = {
-                        navController.navigate("productDetail/${homeCUData.value.data!!.data.productList[i].idx}")
-                    },
-                    productImg = homeCUData.value.data!!.data.productList[i].productImg,
-                )
-            }
-        }
+            if (homeCUData.value is APIResponse.Success) {
+                if (homeCUData.value.data!!.data.productList.size < 3) {
+                    repeat(homeCUData.value.data!!.data.productList.size) { i ->
+                        if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
+                        MainCard(
+                            name = homeCUData.value.data!!.data.productList[i].name,
+                            price = homeCUData.value.data!!.data.productList[i].price,
+                            bookmarked = homeCUData.value.data!!.data.productList[i].bookmarked,
+                            events = homeCUData.value.data!!.data.productList[i].events,
+                            clickEvent = {
+                                navController.navigate("productDetail/${homeCUData.value.data!!.data.productList[i].idx}")
+                            },
+                            productImg = homeCUData.value.data!!.data.productList[i].productImg,
+                        )
 
-        Text(
-            text = "더보기", style = TextStyle(
-                color = Color.Black,
-                fontSize = 14.sp,
-                fontFamily = pretendard,
-                fontWeight = FontWeight.Medium
-            ), modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    navController.navigate("more/2")
-                },
-            textAlign = TextAlign.End
-        )
+                    }
+                } else {
+                    for (i in 0 until 3) {
+                        if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
+                        MainCard(
+                            name = homeCUData.value.data!!.data.productList[i].name,
+                            price = homeCUData.value.data!!.data.productList[i].price,
+                            bookmarked = homeCUData.value.data!!.data.productList[i].bookmarked,
+                            events = homeCUData.value.data!!.data.productList[i].events,
+                            clickEvent = {
+                                navController.navigate("productDetail/${homeCUData.value.data!!.data.productList[i].idx}")
+                            },
+                            productImg = homeCUData.value.data!!.data.productList[i].productImg,
+                        )
+                    }
+                }
+            }
+
+            Text(
+                text = "더보기", style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 14.sp,
+                    fontFamily = pretendard,
+                    fontWeight = FontWeight.Medium
+                ), modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        navController.navigate("more/2")
+                    },
+                textAlign = TextAlign.End
+            )
+        }
     }
 
 }

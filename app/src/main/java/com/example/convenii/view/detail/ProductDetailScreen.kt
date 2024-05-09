@@ -2,6 +2,7 @@ package com.example.convenii.view.detail
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +46,8 @@ import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.CommentUi
 import com.example.convenii.view.components.ConfirmBtn
+import com.example.convenii.view.components.CustomConfirmDialog
+import com.example.convenii.view.components.CustomSelectDialog
 import com.example.convenii.viewModel.detail.DetailViewModel
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -53,6 +59,7 @@ fun ProductDetailScreen(
 ) {
     val scrollState = rememberScrollState()
     LaunchedEffect(key1 = true) {
+        Log.d("ProductDetailScreen", "productIdx: $productIdx")
         viewModel.getProductDetailData(productIdx!!.toInt())
         viewModel.getProductReviewMain(productIdx.toInt())
     }
@@ -62,6 +69,7 @@ fun ProductDetailScreen(
     }
     val reviewData = viewModel.reviewData.collectAsState()
     val bookmarked = viewModel.isBookmark.collectAsState()
+    val isProductDeleted by viewModel.isProductDeleted.collectAsState()
 
     LaunchedEffect(key1 = resultState) {
         if (resultState?.value == true) {
@@ -70,6 +78,40 @@ fun ProductDetailScreen(
         }
     }
 
+    val openDeleteDialog = remember { mutableStateOf(false) }
+
+    when {
+        openDeleteDialog.value ->
+            CustomSelectDialog(
+                onDismissRequest = { openDeleteDialog.value = false },
+                onConfirm = {
+                    openDeleteDialog.value = false
+                    viewModel.deleteProduct(productIdx!!.toInt())
+                },
+                mainTitle = "상품 삭제",
+                subTitle = "상품을 삭제하시겠습니까?",
+                confirmBtnText = "삭제하기",
+                cancelBtnText = "취소하기"
+            )
+    }
+
+    when {
+        isProductDeleted -> {
+            CustomConfirmDialog(
+                onDismissRequest = {
+                    viewModel.resetProductDeleted()
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "isUpdate",
+                        true
+                    )
+                    navController.popBackStack()
+                },
+                mainTitle = "상품 삭제",
+                subTitle = "상품이 삭제되었습니다.",
+                btnText = "확인"
+            )
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -105,7 +147,9 @@ fun ProductDetailScreen(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(9.dp))
-                                    .clickable(enabled = true, onClick = {})
+                                    .clickable(enabled = true, onClick = {
+                                        openDeleteDialog.value = true
+                                    })
                                     .background(Color.White)
                                     .height(30.dp)
                                     .width(77.dp)
@@ -128,7 +172,9 @@ fun ProductDetailScreen(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(9.dp))
-                                    .clickable(enabled = true, onClick = {})
+                                    .clickable(enabled = true, onClick = {
+                                        navController.navigate("editProduct/${productIdx}")
+                                    })
                                     .background(Color.White)
                                     .height(30.dp)
                                     .width(77.dp)
@@ -228,7 +274,7 @@ fun ProductDetailScreen(
                             val eventType: String = when (event.eventIdx) {
                                 1 -> "1 + 1"
                                 2 -> "2 + 1"
-                                3 -> "할인"
+                                3 -> event.price.toString() + "원"
                                 4 -> "덤증정"
                                 5 -> "기타"
                                 else -> "행사 없음"
@@ -332,11 +378,10 @@ fun EventRow(icon: Int, event: String) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        com.skydoves.landscapist.glide.GlideImage(
-            imageModel = { icon },
-            modifier = Modifier
-                .width(25.dp)
-                .height(25.dp),
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            modifier = Modifier.size(25.dp)
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(

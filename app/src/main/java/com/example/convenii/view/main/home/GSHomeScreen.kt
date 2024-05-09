@@ -89,19 +89,35 @@ fun GSHomeScreen(
 
     ) {
         if (homeGSData.value is APIResponse.Success) {
+            if (homeGSData.value.data!!.data.productList.size < 3) {
+                repeat(homeGSData.value.data!!.data.productList.size) { i ->
+                    if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
+                    MainCard(
+                        name = homeGSData.value.data!!.data.productList[i].name,
+                        price = homeGSData.value.data!!.data.productList[i].price,
+                        bookmarked = homeGSData.value.data!!.data.productList[i].bookmarked,
+                        events = homeGSData.value.data!!.data.productList[i].events,
+                        clickEvent = {
+                            navController.navigate("productDetail/${homeGSData.value.data!!.data.productList[i].idx}")
+                        },
+                        productImg = homeGSData.value.data!!.data.productList[i].productImg,
+                    )
 
-            for (i in 0 until 3) {
-                if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
-                MainCard(
-                    name = homeGSData.value.data!!.data.productList[i].name,
-                    price = homeGSData.value.data!!.data.productList[i].price,
-                    bookmarked = homeGSData.value.data!!.data.productList[i].bookmarked,
-                    events = homeGSData.value.data!!.data.productList[i].events,
-                    clickEvent = {
-                        navController.navigate("productDetail/${homeGSData.value.data!!.data.productList[i].idx}")
-                    },
-                    productImg = homeGSData.value.data!!.data.productList[i].productImg,
-                )
+                }
+            } else {
+                for (i in 0 until 3) {
+                    if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
+                    MainCard(
+                        name = homeGSData.value.data!!.data.productList[i].name,
+                        price = homeGSData.value.data!!.data.productList[i].price,
+                        bookmarked = homeGSData.value.data!!.data.productList[i].bookmarked,
+                        events = homeGSData.value.data!!.data.productList[i].events,
+                        clickEvent = {
+                            navController.navigate("productDetail/${homeGSData.value.data!!.data.productList[i].idx}")
+                        },
+                        productImg = homeGSData.value.data!!.data.productList[i].productImg,
+                    )
+                }
             }
         }
 

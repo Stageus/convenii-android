@@ -6,8 +6,12 @@ import com.example.convenii.model.account.SignInModel
 import com.example.convenii.model.detail.ProductDetailModel
 import com.example.convenii.model.detail.ReviewModel
 import com.example.convenii.model.main.ProductModel
+import com.example.convenii.model.product.ProductAddModel
 import com.example.convenii.model.profile.ProfileModel
 import com.example.convenii.service.ApiService
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -47,6 +51,11 @@ interface RemoteDataSource {
         body: ReviewModel.PostReviewRequestData
     ): Response<CommonResponseData.Response>
 
+    suspend fun deleteProduct(
+        productIdx: Int
+    ): Response<CommonResponseData.Response>
+
+
     //bookmark -------------------------------------
     suspend fun getAllBookmark(
         page: Int
@@ -66,6 +75,25 @@ interface RemoteDataSource {
     //profile -------------------------------------
     suspend fun getProfileData(): Response<ProfileModel.ProfileResponseData>
     suspend fun deleteAccount(): Response<CommonResponseData.Response>
+
+    //product -------------------------------------
+    suspend fun addProduct(
+        categoryIdx: Int,
+        name: String,
+        price: String,
+        image: MultipartBody.Part,
+        eventInfo: List<ProductAddModel.EventInfoData>
+    ): Response<CommonResponseData.Response>
+
+    suspend fun editProduct(
+        productIdx: Int,
+        categoryIdx: Int,
+        name: String,
+        price: String,
+        image: MultipartBody.Part?,
+        eventInfo: List<ProductAddModel.EventInfoData>
+    ): Response<CommonResponseData.Response>
+
 }
 
 
@@ -134,6 +162,10 @@ class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiServic
         return apiService.postProductReview(productIdx, body)
     }
 
+    override suspend fun deleteProduct(productIdx: Int): Response<CommonResponseData.Response> {
+        return apiService.deleteProduct(productIdx)
+    }
+
     //bookmark -------------------------------------
     override suspend fun getAllBookmark(
         page: Int
@@ -169,4 +201,76 @@ class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiServic
     override suspend fun deleteAccount(): Response<CommonResponseData.Response> {
         return apiService.deleteAccount()
     }
+
+    //product -------------------------------------
+    override suspend fun addProduct(
+        categoryIdx: Int,
+        name: String,
+        price: String,
+        image: MultipartBody.Part,
+        eventInfo: List<ProductAddModel.EventInfoData>
+    ): Response<CommonResponseData.Response> {
+        val nameRequestBody = name.toRequestBody("text/plain".toMediaType())
+        val priceRequestBody = price.toRequestBody("text/plain".toMediaType())
+        val eventInfoRequestBody = createEventInfoParts(eventInfo)
+
+        return apiService.addProduct(
+            categoryIdx,
+            nameRequestBody,
+            priceRequestBody,
+            image,
+            eventInfoRequestBody
+        )
+    }
+
+    override suspend fun editProduct(
+        productIdx: Int,
+        categoryIdx: Int,
+        name: String,
+        price: String,
+        image: MultipartBody.Part?,
+        eventInfo: List<ProductAddModel.EventInfoData>
+    ): Response<CommonResponseData.Response> {
+        val nameRequestBody = name.toRequestBody("text/plain".toMediaType())
+        val priceRequestBody = price.toRequestBody("text/plain".toMediaType())
+        val eventInfoRequestBody = createEventInfoParts(eventInfo)
+
+        return apiService.editProduct(
+            productIdx,
+            categoryIdx,
+            nameRequestBody,
+            priceRequestBody,
+            image,
+            eventInfoRequestBody
+        )
+    }
+
+
+    private fun createPartFromString(name: String, value: String): MultipartBody.Part {
+        val req = value.toRequestBody("text/plain".toMediaType())
+        return MultipartBody.Part.createFormData(name, null, req)
+    }
+
+    private fun createEventInfoParts(eventInfoData: List<ProductAddModel.EventInfoData>): List<MultipartBody.Part> {
+        val parts = mutableListOf<MultipartBody.Part>()
+        for ((index, data) in eventInfoData.withIndex()) {
+            // Assuming EventInfoData has properties like `companyIdx`, `eventIdx`, `eventPrice`
+            parts.add(
+                createPartFromString(
+                    "eventInfo[$index][companyIdx]",
+                    data.companyIdx.toString()
+                )
+            )
+            parts.add(createPartFromString("eventInfo[$index][eventIdx]", data.eventIdx.toString()))
+            parts.add(
+                createPartFromString(
+                    "eventInfo[$index][eventPrice]",
+                    data.eventPrice.toString()
+                )
+            )
+        }
+        return parts
+    }
+
+
 }

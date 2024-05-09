@@ -56,6 +56,14 @@ class DetailViewModel @Inject constructor(
     private val _isBookmark = MutableStateFlow(false)
     val isBookmark: StateFlow<Boolean> = _isBookmark
 
+    private val _productDetailState =
+        MutableStateFlow<APIResponse<CommonResponseData.Response>>(APIResponse.Empty())
+    val productDetailState: StateFlow<APIResponse<CommonResponseData.Response>> =
+        _productDetailState
+
+    private val _isProductDeleted = MutableStateFlow(false)
+    val isProductDeleted: StateFlow<Boolean> = _isProductDeleted
+
 
     fun getProductDetailData(
         productIdx: Int
@@ -63,8 +71,10 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             _productDetailDataState.value = detailRepository.getDetailProduct(productIdx)
             if (_productDetailDataState.value is APIResponse.Success) {
+
                 val newData =
                     (_productDetailDataState.value as APIResponse.Success).data!!.data.product
+                Log.d("DetailViewModel", "getProductDetailData: ${newData}")
                 _isBookmark.value = newData.bookmarked
             }
 
@@ -75,7 +85,6 @@ class DetailViewModel @Inject constructor(
         val tableData = mutableListOf(
             listOf("", "GS25", "CU", "EMart24"),
         )
-
         for (data in eventInfoData) {
             val month = data.month.substring(data.month.length - 2) + "월"
             val rowData = mutableListOf(month)
@@ -121,7 +130,6 @@ class DetailViewModel @Inject constructor(
         productIdx: Int
     ) {
         _isDataLoading.value = true
-        Log.d("DetailViewModel", "getProductReviewDetail: $page")
         viewModelScope.launch {
             _productReviewState.value = detailRepository.getProductReview(productIdx, page)
             if (_productReviewState.value is APIResponse.Success) {
@@ -209,4 +217,26 @@ class DetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteProduct(productIdx: Int) {
+        viewModelScope.launch {
+            _productDetailState.value = detailRepository.deleteProduct(productIdx)
+
+            if (_productDetailState.value is APIResponse.Success) {
+                Log.d("DetailViewModel", "deleteProduct: success")
+                _isProductDeleted.value = true
+            } else {
+                Log.d(
+                    "DetailViewModel",
+                    "deleteProduct: ${(_productDetailState.value as APIResponse.Error).message}"
+                )
+            }
+        }
+
+    }
+
+    fun resetProductDeleted() {
+        _isProductDeleted.value = false
+    }
+
 }

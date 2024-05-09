@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.ConveniiScreen
+import com.example.convenii.view.components.BottomNav
 import com.example.convenii.view.components.MainCard
 import com.example.convenii.viewModel.main.bookmark.BookmarkViewModel
 
@@ -41,6 +42,7 @@ fun BookmarkScreen(
     val bookmarkData = viewModel.bookmarkData.collectAsState()
 
     LaunchedEffect(key1 = true) {
+        viewModel.resetData()
         viewModel.getBookmarkData()
     }
 
@@ -90,8 +92,11 @@ fun BookmarkScreen(
                     }
                 })
         },
+        bottomBar = {
+            BottomNav(navController = navController)
+        }
 
-        ) { innerPadding ->
+    ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             if (bookmarkDataState.value is APIResponse.Success) {
                 if (bookmarkDataState.value.data!!.authStatus == "false") {

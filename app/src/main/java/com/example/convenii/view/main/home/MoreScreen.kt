@@ -1,6 +1,7 @@
 package com.example.convenii.view.main.home
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +32,6 @@ import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.view.components.MainCard
 import com.example.convenii.viewModel.main.home.MoreViewModel
-import com.skydoves.landscapist.glide.GlideImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,8 +43,19 @@ fun MoreScreen(
     val moreData = viewModel.moreData.collectAsState()
     val moreDataState = viewModel.moreDataState.collectAsState()
     val lazyListState = rememberLazyListState()
+    val resultState = remember {
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("isUpdate")
+    }
+    val isDataEnded by viewModel.isDataEnded.collectAsState()
+
+
+    LaunchedEffect(key1 = viewModel.isDataLoading) {
+        Log.d("MoreScreen", "isDataEnded: $isDataEnded")
+    }
 
     LaunchedEffect(key1 = true) {
+        Log.d("MoreScreen", "type: $type")
+        viewModel.resetData()
         viewModel.getProductCompanyData(type!!.toInt())
     }
 
@@ -50,7 +63,9 @@ fun MoreScreen(
         snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo }
             .collect { visibleItems ->
                 val lastVisibleItem = visibleItems.lastOrNull()
-                if (lastVisibleItem != null && lastVisibleItem.index == moreData.value.size - 1 && !viewModel.isDataEnded.value) {
+                if (lastVisibleItem != null && lastVisibleItem.index == moreData.value.size - 1 && !viewModel.isDataEnded.value && !viewModel.isDataLoading.value) {
+                    Log.d("MoreScreen", "moreData.value.size: ${viewModel.isDataLoading.value}")
+
                     viewModel.getProductCompanyData(type!!.toInt())
                 }
             }
@@ -65,9 +80,7 @@ fun MoreScreen(
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
-//                        navController.popBackStack()
-                        Log.d("data", moreData.value.toString())
-
+                        navController.popBackStack()
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_back),
@@ -82,10 +95,33 @@ fun MoreScreen(
                             .padding(end = 40.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        GlideImage(
-                            imageModel = { R.drawable.image_gs25 },
-                            modifier = Modifier.size(40.dp)
-                        )
+                        when (type) {
+                            "1" -> {
+                                Image(
+                                    painter = painterResource(id = R.drawable.image_gs25),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(40.dp)
+                                )
+                            }
+
+                            "2" -> {
+                                Image(
+                                    painter = painterResource(id = R.drawable.image_cu),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(40.dp)
+                                )
+                            }
+
+                            "3" -> {
+                                Image(
+                                    painter = painterResource(id = R.drawable.image_emart24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(50.dp)
+                                )
+
+                            }
+
+                        }
                     }
                 })
         }

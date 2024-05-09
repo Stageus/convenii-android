@@ -47,39 +47,57 @@ fun EMartHomeScreen(
     ) {
         if (homeEMartData.value is APIResponse.Success) {
 
-            for (i in 0 until 3) {
-                if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
-                MainCard(
-                    name = homeEMartData.value.data!!.data.productList[i].name,
-                    price = homeEMartData.value.data!!.data.productList[i].price,
-                    bookmarked = homeEMartData.value.data!!.data.productList[i].bookmarked,
-                    events = homeEMartData.value.data!!.data.productList[i].events,
-                    clickEvent = {
-                        navController.navigate("productDetail/${homeEMartData.value.data!!.data.productList[i].idx}")
+            if (homeEMartData.value is APIResponse.Success) {
+                if (homeEMartData.value.data!!.data.productList.size < 3) {
+                    repeat(homeEMartData.value.data!!.data.productList.size) { i ->
+                        if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
+                        MainCard(
+                            name = homeEMartData.value.data!!.data.productList[i].name,
+                            price = homeEMartData.value.data!!.data.productList[i].price,
+                            bookmarked = homeEMartData.value.data!!.data.productList[i].bookmarked,
+                            events = homeEMartData.value.data!!.data.productList[i].events,
+                            clickEvent = {
+                                navController.navigate("productDetail/${homeEMartData.value.data!!.data.productList[i].idx}")
+                            },
+                            productImg = homeEMartData.value.data!!.data.productList[i].productImg,
+                        )
 
-                    },
-                    productImg = homeEMartData.value.data!!.data.productList[i].productImg,
-                )
+                    }
+                } else {
+                    for (i in 0 until 3) {
+                        if (i != 0) Spacer(modifier = Modifier.padding(3.dp))
+                        MainCard(
+                            name = homeEMartData.value.data!!.data.productList[i].name,
+                            price = homeEMartData.value.data!!.data.productList[i].price,
+                            bookmarked = homeEMartData.value.data!!.data.productList[i].bookmarked,
+                            events = homeEMartData.value.data!!.data.productList[i].events,
+                            clickEvent = {
+                                navController.navigate("productDetail/${homeEMartData.value.data!!.data.productList[i].idx}")
+                            },
+                            productImg = homeEMartData.value.data!!.data.productList[i].productImg,
+                        )
+                    }
+                }
             }
-        }
 
-        Text(
-            text = "더보기", style = TextStyle(
-                color = Color.Black,
-                fontSize = 14.sp,
-                fontFamily = pretendard,
-                fontWeight = FontWeight.Medium
-            ), modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    navController.navigate("more/3")
-                },
-            textAlign = TextAlign.End
-        )
+            Text(
+                text = "더보기", style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 14.sp,
+                    fontFamily = pretendard,
+                    fontWeight = FontWeight.Medium
+                ), modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        navController.navigate("more/3")
+                    },
+                textAlign = TextAlign.End
+            )
+        }
     }
 
 }

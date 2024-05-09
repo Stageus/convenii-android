@@ -22,6 +22,10 @@ interface DetailRepository {
         productIdx: Int,
         body: ReviewModel.PostReviewRequestData
     ): APIResponse<CommonResponseData.Response>
+
+    suspend fun deleteProduct(
+        productIdx: Int
+    ): APIResponse<CommonResponseData.Response>
 }
 
 class DetailRepositoryImpl(
@@ -94,6 +98,27 @@ class DetailRepositoryImpl(
         } catch (e: Exception) {
             return APIResponse.Error(
                 message = "Post product review failed: ${e.message}",
+                errorCode = "500"
+            )
+        }
+    }
+
+    override suspend fun deleteProduct(productIdx: Int): APIResponse<CommonResponseData.Response> {
+        try {
+            val response = remoteDataSource.deleteProduct(productIdx)
+            return if (response.isSuccessful) {
+                APIResponse.Success(data = response.body())
+            } else {
+                APIResponse.Error(
+                    message = "message: ${
+                        response.errorBody()!!.string()
+                    }",
+                    errorCode = response.code().toString()
+                )
+            }
+        } catch (e: Exception) {
+            return APIResponse.Error(
+                message = "Delete product failed: ${e.message}",
                 errorCode = "500"
             )
         }

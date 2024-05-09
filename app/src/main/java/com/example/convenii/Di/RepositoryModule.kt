@@ -9,6 +9,8 @@ import com.example.convenii.repository.DetailRepository
 import com.example.convenii.repository.DetailRepositoryImpl
 import com.example.convenii.repository.MainRepository
 import com.example.convenii.repository.MainRepositoryImpl
+import com.example.convenii.repository.ProductRepository
+import com.example.convenii.repository.ProductRepositoryImpl
 import com.example.convenii.repository.ProfileRepository
 import com.example.convenii.repository.ProfileRepositoryImpl
 import com.example.convenii.repository.SearchRepository
@@ -53,4 +55,9 @@ object RepositoryModule {
     @Singleton
     fun provideProfileRepository(remoteDataSource: RemoteDataSource): ProfileRepository =
         ProfileRepositoryImpl(remoteDataSource)
+
+    @Provides
+    @Singleton
+    fun provideProductRepository(remoteDataSource: RemoteDataSource): ProductRepository =
+        ProductRepositoryImpl(remoteDataSource)
 }

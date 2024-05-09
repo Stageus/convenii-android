@@ -1,5 +1,6 @@
 package com.example.convenii.viewModel.main.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.convenii.model.APIResponse
@@ -29,28 +30,37 @@ class MoreViewModel @Inject constructor(
     private val _isDataEnded = MutableStateFlow(false)
     val isDataEnded: StateFlow<Boolean> = _isDataEnded
 
+    private val _isDataLoading = MutableStateFlow(false)
+    val isDataLoading: StateFlow<Boolean> = _isDataLoading
+
 
     init {
         resetData()
     }
 
-    private fun resetData() {
+    fun resetData() {
         moreData.value.clear()
+        _isDataEnded.value = false
         _page.value = 1
+    }
+
+    fun setIsDataLoading(value: Boolean) {
+        _isDataLoading.value = value
     }
 
     fun getProductCompanyData(
         companyIdx: Int,
     ) {
+        _isDataLoading.value = true
         viewModelScope.launch {
             _moreDataState.value = mainRepository.getProductCompany(
                 companyIdx = companyIdx,
                 page = page.value,
                 option = "all"
             )
-
             if (_moreDataState.value is APIResponse.Success) {
                 val newData = (_moreDataState.value as APIResponse.Success).data!!.data.productList
+                Log.d("MoreViewModel", "getProductCompanyData: $newData")
                 if (newData.isEmpty()) {
                     _isDataEnded.value = true
                     return@launch
@@ -58,13 +68,17 @@ class MoreViewModel @Inject constructor(
                 _moreData.value = ArrayList(_moreData.value).apply {
                     addAll(newData)
                 }
-
                 _page.value++
             } else {
                 _isDataEnded.value = true
             }
         }
+        _isDataLoading.value = false
+    }
 
+
+    fun setIsDataEnded(value: Boolean) {
+        _isDataEnded.value = value
     }
 
 
