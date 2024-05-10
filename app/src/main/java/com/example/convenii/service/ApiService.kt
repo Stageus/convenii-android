@@ -20,7 +20,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    //Account -------------------------------------
+    //Account ---------------------------------------------------------
     @POST("account/login")
     suspend fun signIn(
         @Body body: SignInModel.RequestBody
@@ -40,6 +40,16 @@ interface ApiService {
     suspend fun register(
         @Body body: RegisterModel.RegisterRequestBody
     ): retrofit2.Response<RegisterModel.RegisterResponseBody>
+
+    @POST("account/verify-email/send/recovery")
+    suspend fun changePwEmailSend(
+        @Body body: RegisterModel.VerifyEmailSendRequestBody
+    ): retrofit2.Response<CommonResponseData.Response>
+
+    @PUT("account/pw")
+    suspend fun changePw(
+        @Body body: RegisterModel.ChangePwRequestBody
+    ): retrofit2.Response<CommonResponseData.Response>
 
     //Main -------------------------------------
     @GET("product/company/{companyIdx}")

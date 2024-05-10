@@ -72,6 +72,8 @@ class ProductViewModel @Inject constructor(
     private val _networkImg = MutableStateFlow<String>("")
     val networkImg: StateFlow<String> = _networkImg
 
+    val _errorCode = MutableStateFlow<String>("")
+    val errorCode: StateFlow<String> = _errorCode
 
     fun setSelectedEvent(company: String, event: String) {
         when (company) {
@@ -193,6 +195,7 @@ class ProductViewModel @Inject constructor(
                 _isUploadSuccess.value = true
 
             } else {
+                _errorCode.value = (_addProductState.value as APIResponse.Error).errorCode!!
                 Log.d(
                     "ProductViewModel",
                     "addProduct: ${_addProductState.value.message} ${_addProductState.value.errorCode}"
@@ -338,6 +341,7 @@ class ProductViewModel @Inject constructor(
                 Log.d("ProductViewModel", "editProduct: ${_addProductState.value.message}")
 
             } else {
+                _errorCode.value = (_addProductState.value as APIResponse.Error).errorCode!!
                 Log.d(
                     "ProductViewModel",
                     "addProduct: ${_addProductState.value.message} ${_addProductState.value.errorCode}"
@@ -345,6 +349,10 @@ class ProductViewModel @Inject constructor(
             }
 
         }
+    }
+
+    fun resetErrorCode() {
+        _errorCode.value = ""
     }
 
 }

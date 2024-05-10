@@ -73,7 +73,6 @@ fun SignInScreen(
                 popUpTo(navController.graph.id) {
                     inclusive = true
                 }
-
             }
         }
     }
@@ -221,7 +220,11 @@ fun SignInScreen(
                             fontWeight = FontWeight.Medium,
                             textDecoration = TextDecoration.Underline
                         ),
-                        modifier = Modifier.padding(bottom = 32.dp)
+                        modifier = Modifier
+                            .padding(bottom = 32.dp)
+                            .clickable {
+                                navController.navigate("change1")
+                            }
                     )
                 }
 

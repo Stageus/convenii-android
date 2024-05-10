@@ -123,6 +123,20 @@ fun AddProductScreen(
 
     val isUploadSuccess by viewModel.isUploadSuccess.collectAsState()
 
+    val errorCode by viewModel._errorCode.collectAsState()
+
+    when {
+        errorCode == "413" ->
+            CustomConfirmDialog(
+                onDismissRequest = {
+                    viewModel.resetErrorCode()
+                },
+                mainTitle = "상품추가",
+                subTitle = "5mb 이하의 이미지만 업로드 가능합니다",
+                btnText = "확인",
+            )
+    }
+
     when {
         isUploadSuccess -> {
             CustomConfirmDialog(

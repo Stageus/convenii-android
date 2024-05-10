@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,36 +28,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.convenii.R
-import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
 import com.example.convenii.viewModel.account.ChangePwViewModel
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangePw1Screen(
+fun ChangePw3Screen(
     navController: NavController,
+    email: String?,
 ) {
     val viewModel: ChangePwViewModel = hiltViewModel()
-    var email by remember { mutableStateOf("") }
-    val isItEmail by viewModel.isItEmail.collectAsState()
-    val verifyEMailSendState by viewModel.verifyEmailSendState.collectAsState()
-    val errorCode by viewModel.verifyEmailSendErrorCode.collectAsState()
-
-    LaunchedEffect(key1 = verifyEMailSendState) {
-        if (verifyEMailSendState is APIResponse.Success) {
-            viewModel.resetVerifyEmailSendState()
-            navController.navigate("change2/$email")
-        }
-    }
+    var pw by remember { mutableStateOf("") }
+    val isValidPw by viewModel.isValidPw.collectAsState()
 
     Scaffold(
         topBar = {
@@ -75,7 +64,6 @@ fun ChangePw1Screen(
                             painter = painterResource(id = R.drawable.icon_back),
                             contentDescription = null,
                         )
-
                     }
                 },
                 title = {
@@ -86,7 +74,7 @@ fun ChangePw1Screen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "비밀번호 찾기",
+                            text = "비밀번호 변경",
                             modifier = Modifier.align(Alignment.Center),
                             style = TextStyle(
                                 fontSize = 18.sp,
@@ -95,7 +83,8 @@ fun ChangePw1Screen(
                             )
                         )
                     }
-                })
+                }
+            )
         }
     ) { innerPadding ->
         Box(
@@ -111,7 +100,7 @@ fun ChangePw1Screen(
                     .padding(top = 60.dp, start = 16.dp, end = 16.dp)
             ) {
                 Text(
-                    text = "이메일",
+                    text = "비밀번호",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = pretendard,
@@ -121,36 +110,21 @@ fun ChangePw1Screen(
                     modifier = Modifier.fillMaxWidth()
                 )
                 AccountInputField(
-                    keyboardOptions = KeyboardOptions.Default,
-                    keyboardActions = KeyboardActions(),
-                    isPassword = false,
-                    text = email,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                    ),
+                    isPassword = true,
+                    text = pw,
                     valueChange = {
-                        email = it
-                        viewModel.checkIsItEmail(it)
+                        pw = it
+                        viewModel.checkIsValidPw(it)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 12.dp),
-                    placeholder = "가입시 사용한 이메일을 입력해주세요",
-                    isError = !isItEmail
+                    placeholder = "변경할 비밀번호를 입력해주세요",
+                    isError = false
                 )
-                if (verifyEMailSendState is APIResponse.Error && errorCode == "403") {
-                    Text(
-                        text = "존재하지 않는 이메일입니다",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Start,
-                            color = Color.Red
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 12.dp)
-                            .padding(start = 5.dp)
-                    )
-                }
 
                 //간격 최대
                 Spacer(modifier = Modifier.weight(1f))
@@ -160,9 +134,9 @@ fun ChangePw1Screen(
                         .padding(bottom = 24.dp)
                         .navigationBarsPadding(),
                     text = "다음으로",
-                    enabled = isItEmail,
+                    enabled = isValidPw,
                     onClick = {
-                        viewModel.verifyEmailSend(email)
+                        navController.navigate("change4/$email/$pw")
                     }
                 )
             }

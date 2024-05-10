@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 
 interface RemoteDataSource {
-    // account
+    // account------------------------------------------------------------------------------
     suspend fun signIn(email: String, pw: String): Response<SignInModel.ResponseBody>
     suspend fun verifyEmailSend(email: String): Response<RegisterModel.VerifyEmailSendResponseBody>
     suspend fun verifyEmailCheck(
@@ -30,6 +30,10 @@ interface RemoteDataSource {
         pw: String,
         nickname: String
     ): Response<RegisterModel.RegisterResponseBody>
+
+    suspend fun changePwVerifyEmailSend(email: String): Response<CommonResponseData.Response>
+
+    suspend fun changePw(email: String, pw: String): Response<CommonResponseData.Response>
 
     //main -------------------------------------
     suspend fun getProductCompany(
@@ -99,7 +103,7 @@ interface RemoteDataSource {
 
 class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiService) :
     RemoteDataSource {
-    // account -------------------------------------
+    // account --------------------------------------------------------------------------
     override suspend fun signIn(email: String, pw: String): Response<SignInModel.ResponseBody> {
         val requestBody = SignInModel.RequestBody(email = email, pw = pw)
         return apiService.signIn(requestBody)
@@ -132,6 +136,19 @@ class RemoteDataSourceImpl @Inject constructor(private val apiService: ApiServic
             nickname = nickname
         )
         return apiService.register(requestBody)
+    }
+
+    override suspend fun changePwVerifyEmailSend(email: String): Response<CommonResponseData.Response> {
+        val requestBody = RegisterModel.VerifyEmailSendRequestBody(email = email)
+        return apiService.changePwEmailSend(requestBody)
+    }
+
+    override suspend fun changePw(
+        email: String,
+        pw: String
+    ): Response<CommonResponseData.Response> {
+        val requestBody = RegisterModel.ChangePwRequestBody(email = email, pw = pw)
+        return apiService.changePw(requestBody)
     }
 
     //main -------------------------------------

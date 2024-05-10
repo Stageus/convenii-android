@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.convenii.view.account.change
 
 import androidx.compose.foundation.background
@@ -8,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,7 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,29 +39,26 @@ import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
+import com.example.convenii.view.account.register.CustomStyledText
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
 import com.example.convenii.viewModel.account.ChangePwViewModel
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangePw1Screen(
+fun ChangePw2Screen(
     navController: NavController,
+    email: String? = "",
 ) {
     val viewModel: ChangePwViewModel = hiltViewModel()
-    var email by remember { mutableStateOf("") }
-    val isItEmail by viewModel.isItEmail.collectAsState()
-    val verifyEMailSendState by viewModel.verifyEmailSendState.collectAsState()
-    val errorCode by viewModel.verifyEmailSendErrorCode.collectAsState()
-
-    LaunchedEffect(key1 = verifyEMailSendState) {
-        if (verifyEMailSendState is APIResponse.Success) {
-            viewModel.resetVerifyEmailSendState()
-            navController.navigate("change2/$email")
+    var code by remember { mutableStateOf("") }
+    val verifyCodeCheckState by viewModel.verifyCodeCheckState.collectAsState()
+    val errorCode by viewModel.verifyCodeCheckErrorCode.collectAsState()
+    LaunchedEffect(key1 = verifyCodeCheckState) {
+        if (verifyCodeCheckState is APIResponse.Success) {
+            navController.navigate("change3/$email")
+            viewModel.resetVerifyCodeCheckState()
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -75,7 +73,6 @@ fun ChangePw1Screen(
                             painter = painterResource(id = R.drawable.icon_back),
                             contentDescription = null,
                         )
-
                     }
                 },
                 title = {
@@ -86,7 +83,7 @@ fun ChangePw1Screen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "비밀번호 찾기",
+                            text = "회원가입",
                             modifier = Modifier.align(Alignment.Center),
                             style = TextStyle(
                                 fontSize = 18.sp,
@@ -110,47 +107,20 @@ fun ChangePw1Screen(
                     .align(Alignment.TopCenter)
                     .padding(top = 60.dp, start = 16.dp, end = 16.dp)
             ) {
-                Text(
-                    text = "이메일",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = pretendard,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Start
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
+
+                CustomStyledText(mail = email!!)
                 AccountInputField(
-                    keyboardOptions = KeyboardOptions.Default,
-                    keyboardActions = KeyboardActions(),
+                    //숫자입력
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     isPassword = false,
-                    text = email,
-                    valueChange = {
-                        email = it
-                        viewModel.checkIsItEmail(it)
-                    },
+                    text = code,
+                    valueChange = { code = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp),
-                    placeholder = "가입시 사용한 이메일을 입력해주세요",
-                    isError = !isItEmail
+                        .padding(top = 30.dp),
+                    placeholder = "인증번호",
+                    isError = errorCode.isNotEmpty(),
                 )
-                if (verifyEMailSendState is APIResponse.Error && errorCode == "403") {
-                    Text(
-                        text = "존재하지 않는 이메일입니다",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Start,
-                            color = Color.Red
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 12.dp)
-                            .padding(start = 5.dp)
-                    )
-                }
 
                 //간격 최대
                 Spacer(modifier = Modifier.weight(1f))
@@ -160,12 +130,18 @@ fun ChangePw1Screen(
                         .padding(bottom = 24.dp)
                         .navigationBarsPadding(),
                     text = "다음으로",
-                    enabled = isItEmail,
+                    enabled = if (code.length == 6) true else false,
                     onClick = {
-                        viewModel.verifyEmailSend(email)
+                        viewModel.verifyCodeCheck(email, code)
                     }
                 )
             }
         }
     }
+
 }
+
+
+
+
+

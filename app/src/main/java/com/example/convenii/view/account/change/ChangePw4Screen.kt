@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,24 +39,46 @@ import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.AccountInputField
 import com.example.convenii.view.components.ConfirmBtn
+import com.example.convenii.view.components.CustomConfirmDialog
 import com.example.convenii.viewModel.account.ChangePwViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangePw1Screen(
+fun ChangePw4Screen(
     navController: NavController,
+    email: String?,
+    pw: String?
 ) {
     val viewModel: ChangePwViewModel = hiltViewModel()
-    var email by remember { mutableStateOf("") }
-    val isItEmail by viewModel.isItEmail.collectAsState()
-    val verifyEMailSendState by viewModel.verifyEmailSendState.collectAsState()
-    val errorCode by viewModel.verifyEmailSendErrorCode.collectAsState()
+    var checkPw by remember { mutableStateOf("") }
+    val changePwState by viewModel.changePwState.collectAsState()
+    val openChangeSuccessDialog = remember {
+        mutableStateOf(false)
+    }
 
-    LaunchedEffect(key1 = verifyEMailSendState) {
-        if (verifyEMailSendState is APIResponse.Success) {
-            viewModel.resetVerifyEmailSendState()
-            navController.navigate("change2/$email")
+    LaunchedEffect(key1 = changePwState) {
+        if (changePwState is APIResponse.Success) {
+            openChangeSuccessDialog.value = true
+        }
+    }
+
+    when {
+        openChangeSuccessDialog.value -> {
+            CustomConfirmDialog(
+                onDismissRequest = {
+                    openChangeSuccessDialog.value = false
+                    navController.navigate("start") {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+
+                    }
+                },
+                mainTitle = "비밀번호 변경 완료",
+                subTitle = "비밀번호 변경이 완료되었습니다.",
+                btnText = "확인",
+            )
         }
     }
 
@@ -86,7 +107,7 @@ fun ChangePw1Screen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "비밀번호 찾기",
+                            text = "비밀번호 변경",
                             modifier = Modifier.align(Alignment.Center),
                             style = TextStyle(
                                 fontSize = 18.sp,
@@ -111,7 +132,7 @@ fun ChangePw1Screen(
                     .padding(top = 60.dp, start = 16.dp, end = 16.dp)
             ) {
                 Text(
-                    text = "이메일",
+                    text = "비밀번호 재 확인",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = pretendard,
@@ -122,35 +143,17 @@ fun ChangePw1Screen(
                 )
                 AccountInputField(
                     keyboardOptions = KeyboardOptions.Default,
-                    keyboardActions = KeyboardActions(),
-                    isPassword = false,
-                    text = email,
+                    isPassword = true,
+                    text = checkPw,
                     valueChange = {
-                        email = it
-                        viewModel.checkIsItEmail(it)
+                        checkPw = it
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 12.dp),
-                    placeholder = "가입시 사용한 이메일을 입력해주세요",
-                    isError = !isItEmail
+                    placeholder = "비밀번호를 입력해주세요",
+                    isError = false
                 )
-                if (verifyEMailSendState is APIResponse.Error && errorCode == "403") {
-                    Text(
-                        text = "존재하지 않는 이메일입니다",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = pretendard,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Start,
-                            color = Color.Red
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 12.dp)
-                            .padding(start = 5.dp)
-                    )
-                }
 
                 //간격 최대
                 Spacer(modifier = Modifier.weight(1f))
@@ -160,9 +163,9 @@ fun ChangePw1Screen(
                         .padding(bottom = 24.dp)
                         .navigationBarsPadding(),
                     text = "다음으로",
-                    enabled = isItEmail,
+                    enabled = pw == checkPw,
                     onClick = {
-                        viewModel.verifyEmailSend(email)
+                        viewModel.changePw(email!!, pw!!)
                     }
                 )
             }

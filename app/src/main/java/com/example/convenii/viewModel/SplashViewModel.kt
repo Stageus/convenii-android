@@ -3,6 +3,7 @@ package com.example.convenii.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.convenii.repository.TokenRepository
+import com.example.convenii.view.ConveniiScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ class SplashViewModel @Inject constructor(private val tokenRepository: TokenRepo
         viewModelScope.launch {
             _isToken.value = tokenRepository.checkToken()
             if (_isToken.value) {
-                _screen.value = "home"
+                _screen.value = ConveniiScreen.Home.route
             } else {
                 _screen.value = "start"
             }

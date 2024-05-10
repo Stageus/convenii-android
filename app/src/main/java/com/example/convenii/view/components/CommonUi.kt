@@ -37,9 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,7 +73,9 @@ fun AccountInputField(
         modifier = modifier,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+        visualTransformation = if (isPassword) com.example.convenii.view.components.PasswordVisualTransformation(
+
+        ) else VisualTransformation.None,
         placeholder = {
             Text(
                 text = placeholder,
@@ -538,4 +543,28 @@ fun CustomSelectDialog(
     }
 }
 
+
+class PasswordVisualTransformation(val mask: Char = '\u2022') : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        return TransformedText(
+            text = if (text.text.isNotEmpty()) {
+                AnnotatedString(mask.toString().repeat(text.text.length - 1) + text.text.last())
+            } else {
+                AnnotatedString(mask.toString().repeat(text.text.length))
+            },
+            offsetMapping = OffsetMapping.Identity
+        )
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PasswordVisualTransformation) return false
+        if (mask != other.mask) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return mask.hashCode()
+    }
+}
 

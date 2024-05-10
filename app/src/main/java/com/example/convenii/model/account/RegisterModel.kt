@@ -24,4 +24,9 @@ class RegisterModel {
     data class RegisterResponseBody(
         val accessToken: String
     )
+
+    data class ChangePwRequestBody(
+        val email: String,
+        val pw: String
+    )
 }

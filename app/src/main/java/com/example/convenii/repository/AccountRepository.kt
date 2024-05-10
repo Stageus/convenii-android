@@ -21,6 +21,10 @@ interface AccountRepository {
         pw: String,
         nickname: String
     ): APIResponse<RegisterModel.RegisterResponseBody>
+
+    suspend fun changePwVerifyEmailSend(email: String): APIResponse<CommonResponseData.Response>
+
+    suspend fun changePw(email: String, pw: String): APIResponse<CommonResponseData.Response>
 }
 
 class AccountRepositoryImpl(
@@ -117,6 +121,53 @@ class AccountRepositoryImpl(
             // 로그 기록, 오류 메시지를 UI로 전달, 또는 특정 오류 처리
             return APIResponse.Error(
                 message = "Register failed: ${e.message}",
+                errorCode = "500"
+            )
+        }
+    }
+
+    override suspend fun changePwVerifyEmailSend(email: String): APIResponse<CommonResponseData.Response> {
+        try {
+            val response = remoteDataSource.changePwVerifyEmailSend(email)
+            return if (response.isSuccessful) {
+                APIResponse.Success(data = response.body())
+            } else {
+                APIResponse.Error(
+                    message = "message: ${
+                        response.errorBody()!!.string()
+                    }",
+                    errorCode = response.code().toString()
+                )
+            }
+        } catch (e: Exception) {
+            // 로그 기록, 오류 메시지를 UI로 전달, 또는 특정 오류 처리
+            return APIResponse.Error(
+                message = "Change password verify email send failed: ${e.message}",
+                errorCode = "500"
+            )
+        }
+    }
+
+    override suspend fun changePw(
+        email: String,
+        pw: String
+    ): APIResponse<CommonResponseData.Response> {
+        try {
+            val response = remoteDataSource.changePw(email, pw)
+            return if (response.isSuccessful) {
+                APIResponse.Success(data = response.body())
+            } else {
+                APIResponse.Error(
+                    message = "message: ${
+                        response.errorBody()!!.string()
+                    }",
+                    errorCode = response.code().toString()
+                )
+            }
+        } catch (e: Exception) {
+            // 로그 기록, 오류 메시지를 UI로 전달, 또는 특정 오류 처리
+            return APIResponse.Error(
+                message = "Change password failed: ${e.message}",
                 errorCode = "500"
             )
         }

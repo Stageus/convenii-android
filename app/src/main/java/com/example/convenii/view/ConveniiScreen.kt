@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -22,6 +23,10 @@ import androidx.navigation.navArgument
 import com.example.convenii.R
 import com.example.convenii.view.account.SignInScreen
 import com.example.convenii.view.account.StartScreen
+import com.example.convenii.view.account.change.ChangePw1Screen
+import com.example.convenii.view.account.change.ChangePw2Screen
+import com.example.convenii.view.account.change.ChangePw3Screen
+import com.example.convenii.view.account.change.ChangePw4Screen
 import com.example.convenii.view.account.register.Register1Screen
 import com.example.convenii.view.account.register.Register2Screen
 import com.example.convenii.view.account.register.Register3Screen
@@ -46,6 +51,10 @@ enum class ConveniiScreen(val route: String, val title: String, val icon: Int? =
     Register3("register3", "회원가입"),
     Register4("register4", "회원가입"),
     Register5("register5", "회원가입"),
+    Change1("change1", "비밀번호 변경"),
+    Change2("change2/{email}", "비밀번호 변경"),
+    Change3("change3/{email}", "비밀번호 변경"),
+    Change4("change4/{email}/{pw}", "비밀번호 변경"),
     Home("home", "홈", R.drawable.icon_home),
     ProductDetail("productDetail/{productIdx}", "상품 상세"),
     ReviewDetail("reviewDetail/{productIdx}", "리뷰 상세"),
@@ -62,10 +71,12 @@ enum class ConveniiScreen(val route: String, val title: String, val icon: Int? =
 
 fun NavGraphBuilder.composableWithAnimation(
     route: String,
+    arguments: List<NamedNavArgument> = emptyList(),
     content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
 ) {
     composable(
         route = route,
+        arguments = arguments,
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
@@ -103,20 +114,7 @@ fun ConveniiApp(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-//    Scaffold(
-//        bottomBar = {
-//            if (currentRoute in listOf(
-//                    ConveniiScreen.Home.name,
-//                    ConveniiScreen.SearchMain.name,
-//                    ConveniiScreen.Bookmark.name,
-//                    ConveniiScreen.Profile.name
-//                )
-//            ) {
-//                BottomNav(navController = navController)
-//            }
-//        },
-//        modifier = Modifier.background(color = Color.White)
-//    ) { innerPadding ->
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -125,6 +123,8 @@ fun ConveniiApp(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
     ) {
+
+        //account-----------------------------------------------
 
         composableWithAnimation(route = ConveniiScreen.Start.name) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
@@ -197,6 +197,55 @@ fun ConveniiApp(
             )
         }
 
+        composableWithAnimation(
+            route = ConveniiScreen.Change1.route,
+        ) {
+            ChangePw1Screen(
+                navController = navController,
+            )
+        }
+
+        composableWithAnimation(route = ConveniiScreen.Change2.route,
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            ChangePw2Screen(
+                navController = navController,
+                email = email
+            )
+        }
+
+        composableWithAnimation(
+            route = ConveniiScreen.Change3.route,
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType },
+            )
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            ChangePw3Screen(
+                navController = navController,
+                email = email
+            )
+        }
+
+        composableWithAnimation(
+            route = ConveniiScreen.Change4.route,
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType },
+                navArgument("pw") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            val pw = backStackEntry.arguments?.getString("pw")
+            ChangePw4Screen(
+                navController = navController,
+                email = email,
+                pw = pw
+            )
+        }
+
+        //main-----------------------------------------------
         composable(route = ConveniiScreen.Home.name,
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None }) { backStackEntry ->
@@ -208,6 +257,8 @@ fun ConveniiApp(
                 viewModel = hiltViewModel(parentEntry)
             )
         }
+
+        //detail-----------------------------------------------
 
         composable(
             route = ConveniiScreen.ProductDetail.route,
@@ -257,6 +308,8 @@ fun ConveniiApp(
             )
         }
 
+        //search-----------------------------------------------
+
         composable(route = ConveniiScreen.SearchResult.name,
             enterTransition = {
                 EnterTransition.None
@@ -283,6 +336,8 @@ fun ConveniiApp(
             )
         }
 
+        //bookmark-----------------------------------------------
+
         composable(
             route = ConveniiScreen.Bookmark.name,
             enterTransition = { EnterTransition.None },
@@ -307,6 +362,8 @@ fun ConveniiApp(
                 profileViewModel = hiltViewModel(parentEntry)
             )
         }
+
+        //product-----------------------------------------------
 
         composable(
             route = ConveniiScreen.AddProduct.name,
