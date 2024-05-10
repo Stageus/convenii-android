@@ -1,5 +1,6 @@
 package com.example.convenii.view.main.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -46,7 +47,7 @@ fun CUHomeScreen(
 
     ) {
         if (homeCUData.value is APIResponse.Success) {
-
+            Log.d("CUHomeScreen", homeCUData.value.data!!.data.productList.toString())
             if (homeCUData.value is APIResponse.Success) {
                 if (homeCUData.value.data!!.data.productList.size < 3) {
                     repeat(homeCUData.value.data!!.data.productList.size) { i ->

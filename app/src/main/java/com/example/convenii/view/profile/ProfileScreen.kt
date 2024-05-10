@@ -32,6 +32,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.model.APIResponse
@@ -40,6 +41,7 @@ import com.example.convenii.view.ConveniiScreen
 import com.example.convenii.view.components.BottomNav
 import com.example.convenii.view.components.CustomConfirmDialog
 import com.example.convenii.view.components.CustomSelectDialog
+import com.example.convenii.viewModel.account.ChangePwViewModel
 import com.example.convenii.viewModel.account.RegisterViewModel
 import com.example.convenii.viewModel.profile.ProfileViewModel
 
@@ -52,6 +54,7 @@ fun ProfileScreen(
     registerViewModel: RegisterViewModel,
     profileViewModel: ProfileViewModel
 ) {
+    val changePwViewModel: ChangePwViewModel = hiltViewModel()
     val openAlertDialog = remember { mutableStateOf(false) }
     val openDeleteAccountDialog = remember {
         mutableStateOf(false)
@@ -206,7 +209,15 @@ fun ProfileScreen(
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.height(64.dp)
+                        modifier = Modifier
+                            .height(64.dp)
+                            .clickable(
+                                interactionSource = MutableInteractionSource(),
+                                indication = null
+                            ) {
+                                changePwViewModel.verifyEmailSend(profileData.email)
+                                navController.navigate("change2/${profileData.email}")
+                            }
                     ) {
                         Column {
                             Text(
@@ -232,12 +243,12 @@ fun ProfileScreen(
                         }
                         Spacer(modifier = Modifier.weight(1f))
 
-//                        com.skydoves.landscapist.glide.GlideImage(
-//                            imageModel = {
-//                                R.drawable.icon_right_arrow
-//                            },
-//                            modifier = Modifier.size(20.dp)
-//                        )
+                        com.skydoves.landscapist.glide.GlideImage(
+                            imageModel = {
+                                R.drawable.icon_right_arrow
+                            },
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
 
                     //구분선
@@ -255,7 +266,6 @@ fun ProfileScreen(
                             .clickable(
                                 interactionSource = MutableInteractionSource(),
                                 indication = null
-
                             ) { openAlertDialog.value = true }
                     ) {
                         Text(

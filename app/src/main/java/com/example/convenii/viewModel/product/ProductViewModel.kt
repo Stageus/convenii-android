@@ -150,7 +150,7 @@ class ProductViewModel @Inject constructor(
         if (_cuSelectedEvent.value != "제품없음") {
             eventInfo.add(
                 ProductAddModel.EventInfoData(
-                    1,
+                    2,
                     eventToInt(_cuSelectedEvent.value),
                     if (_cuEventPrice.value.isEmpty()) null else _cuEventPrice.value.toInt()
                 )
@@ -159,7 +159,7 @@ class ProductViewModel @Inject constructor(
         if (_gsSelectedEvent.value != "제품없음") {
             eventInfo.add(
                 ProductAddModel.EventInfoData(
-                    2,
+                    1,
                     eventToInt(_gsSelectedEvent.value),
                     if (_gsEventPrice.value.isEmpty()) null else _gsEventPrice.value.toInt()
                 )
@@ -295,7 +295,7 @@ class ProductViewModel @Inject constructor(
         if (_cuSelectedEvent.value != "제품없음") {
             eventInfo.add(
                 ProductAddModel.EventInfoData(
-                    1,
+                    2,
                     eventToInt(_cuSelectedEvent.value),
                     if (_cuEventPrice.value.isEmpty()) null else _cuEventPrice.value.toInt()
                 )
@@ -304,7 +304,7 @@ class ProductViewModel @Inject constructor(
         if (_gsSelectedEvent.value != "제품없음") {
             eventInfo.add(
                 ProductAddModel.EventInfoData(
-                    2,
+                    1,
                     eventToInt(_gsSelectedEvent.value),
                     if (_gsEventPrice.value.isEmpty()) null else _gsEventPrice.value.toInt()
                 )
@@ -326,7 +326,6 @@ class ProductViewModel @Inject constructor(
             _productPrice.value,
             eventInfo
         )
-
         viewModelScope.launch {
             _addProductState.value = productRepository.editProduct(
                 productIdx = productIdx,

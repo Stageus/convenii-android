@@ -35,10 +35,6 @@ class SignInViewModel @Inject constructor(
         _email.value = email
     }
 
-    fun setIsEnabled() {
-        _isEnabled.value = !_isEnabled.value
-    }
-
     fun setIsError() {
         _isError.value = !_isError.value
     }

@@ -6,6 +6,7 @@ import com.example.convenii.repository.TokenRepository
 import com.example.convenii.view.ConveniiScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class SplashViewModel @Inject constructor(private val tokenRepository: TokenRepo
     ViewModel() {
 
     private val _isReady = MutableStateFlow(false)
-    val isReady: MutableStateFlow<Boolean> get() = _isReady
+    val isReady: StateFlow<Boolean> get() = _isReady
 
     private val _isToken = MutableStateFlow(false)
     val isToken: MutableStateFlow<Boolean> get() = _isToken
