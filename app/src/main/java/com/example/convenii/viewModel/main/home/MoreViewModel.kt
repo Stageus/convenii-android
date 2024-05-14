@@ -60,7 +60,7 @@ class MoreViewModel @Inject constructor(
             )
             if (_moreDataState.value is APIResponse.Success) {
                 val newData = (_moreDataState.value as APIResponse.Success).data!!.data.productList
-                Log.d("MoreViewModel", "getProductCompanyData: $newData")
+                Log.d("MoreViewModel", "getProductCompanyData: ${page.value}")
                 if (newData.isEmpty()) {
                     _isDataEnded.value = true
                     return@launch

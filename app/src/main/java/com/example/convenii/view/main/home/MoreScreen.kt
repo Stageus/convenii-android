@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import com.example.convenii.R
 import com.example.convenii.view.components.MainCard
 import com.example.convenii.viewModel.main.home.MoreViewModel
+import kotlinx.coroutines.flow.debounce
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,15 +62,14 @@ fun MoreScreen(
 
     LaunchedEffect(lazyListState, viewModel.isDataEnded) {
         snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo }
+            .debounce(100)
             .collect { visibleItems ->
                 val lastVisibleItem = visibleItems.lastOrNull()
                 if (lastVisibleItem != null && lastVisibleItem.index == moreData.value.size - 1 && !viewModel.isDataEnded.value && !viewModel.isDataLoading.value) {
                     Log.d("MoreScreen", "moreData.value.size: ${viewModel.isDataLoading.value}")
-
                     viewModel.getProductCompanyData(type!!.toInt())
                 }
             }
-
     }
 
     Scaffold(
