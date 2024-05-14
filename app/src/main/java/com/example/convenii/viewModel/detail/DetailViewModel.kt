@@ -43,6 +43,7 @@ class DetailViewModel @Inject constructor(
 
     private val _reviewResponse =
         MutableStateFlow<APIResponse<CommonResponseData.Response>>(APIResponse.Empty())
+    val reviewResponse: StateFlow<APIResponse<CommonResponseData.Response>> = _reviewResponse
 
     private val _reviewCompleteState = MutableStateFlow(false)
     val reviewCompleteState: StateFlow<Boolean> = _reviewCompleteState
@@ -58,8 +59,6 @@ class DetailViewModel @Inject constructor(
 
     private val _productDetailState =
         MutableStateFlow<APIResponse<CommonResponseData.Response>>(APIResponse.Empty())
-    val productDetailState: StateFlow<APIResponse<CommonResponseData.Response>> =
-        _productDetailState
 
     private val _isProductDeleted = MutableStateFlow(false)
     val isProductDeleted: StateFlow<Boolean> = _isProductDeleted
@@ -92,7 +91,7 @@ class DetailViewModel @Inject constructor(
             // 각 회사별로 이벤트 처리
             val companies = listOf(1, 2, 3) // GS25, CU, Emart24의 companyIdx
             companies.forEach { companyIdx ->
-                val event = data.events?.find { it.companyIdx == companyIdx }
+                val event = data.events.find { it.companyIdx == companyIdx }
                 val eventDescription = when (event?.eventIdx) {
                     1 -> "1+1"
                     2 -> "2+1"
@@ -161,6 +160,7 @@ class DetailViewModel @Inject constructor(
         content: String
     ) {
         val body = ReviewModel.PostReviewRequestData(score, content)
+        _reviewResponse.value = APIResponse.Loading()
         viewModelScope.launch {
             _reviewResponse.value = detailRepository.postProductReview(productIdx, body)
 

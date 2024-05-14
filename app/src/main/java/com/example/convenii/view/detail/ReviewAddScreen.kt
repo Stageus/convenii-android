@@ -18,10 +18,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,10 +50,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.convenii.R
+import com.example.convenii.model.APIResponse
 import com.example.convenii.ui.theme.pretendard
 import com.example.convenii.view.components.ConfirmBtn
 import com.example.convenii.view.components.CustomConfirmDialog
 import com.example.convenii.viewModel.detail.DetailViewModel
+import com.skydoves.landscapist.glide.GlideImage
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
@@ -66,6 +71,7 @@ fun ReviewAddScreen(
     val productDetailData = productDetailDataSate.value.data!!.data.product
 
     val reviewCompleteState = viewModel.reviewCompleteState.collectAsState()
+    val reviewResponseState by viewModel.reviewResponse.collectAsState()
 
     when {
         reviewCompleteState.value -> {
@@ -91,178 +97,200 @@ fun ReviewAddScreen(
 
 
     val scrollState = rememberScrollState()
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                ),
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_back),
-                            contentDescription = null
-                        )
-                    }
-                },
-                title = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        Text(
-                            text = "",
-                            modifier = Modifier.align(Alignment.Center),
-                            style = TextStyle(
-                                fontSize = 18.sp,
-                                fontFamily = pretendard,
-                                fontWeight = FontWeight.Medium
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.White,
+                    ),
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            navController.popBackStack()
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_back),
+                                contentDescription = null
                             )
-                        )
-                    }
-                }
-            )
-        },
-        bottomBar = {
-            ConfirmBtn(
-                text = "리뷰 남기기",
-                enabled = true,
-                onClick = {
-                    viewModel.postProductReview(
-                        productDetailData.idx,
-                        star,
-                        review
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-                    .padding(horizontal = 16.dp)
-            )
-
-        }
-    ) { innerPadding ->
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(Color.White)
-
-        ) {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .padding(horizontal = 16.dp)
-
-            ) {
-
-
-                com.skydoves.landscapist.glide.GlideImage(
-                    imageModel = {
-                        productDetailData.productImg
-
+                        }
                     },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .fillMaxWidth(0.41f)
-                        .aspectRatio(1f)
-                        .align(Alignment.CenterHorizontally),
-                )
-
-                Text(
-                    text = productDetailData.name,
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = pretendard
-                    ),
-                    modifier = Modifier.padding(top = 24.dp)
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-                    for (i in 1..star) {
-                        if (i != 1) Spacer(modifier = Modifier.padding(start = 4.dp))
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_fill_star),
-                            contentDescription = null,
-                            tint = Color(0xffFFD643),
-                            modifier = Modifier
-                                .size(36.dp)
-                                .clickable(
-                                    interactionSource = MutableInteractionSource(),
-                                    indication = null
-                                ) { star = i }
-                        )
-                    }
-
-                    for (i in 1..(5 - star)) {
-                        Spacer(modifier = Modifier.padding(start = 4.dp))
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_empty_star),
-                            contentDescription = null,
-                            tint = Color(0xffFFD643),
-                            modifier = Modifier
-                                .size(36.dp)
-                                .clickable(
-                                    interactionSource = MutableInteractionSource(),
-                                    indication = null
-                                ) {
-                                    star += i
-                                    Log.d("star", star.toString())
-                                }
-
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-
-                BasicTextField(
-                    value = review, onValueChange = {
-                        review = it
-                    },
-                    textStyle = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = pretendard,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp),
-                    decorationBox = { innerTextField ->
+                    title = {
                         Box(
                             modifier = Modifier
-                                .background(Color(0xffffffff))
-                                .border(1.dp, Color(0xffD1D1D1), RoundedCornerShape(8.dp))
-                                .padding(16.dp)
+                                .fillMaxSize()
                         ) {
-                            if (review.isEmpty()) {
-                                Text(
-                                    text = "리뷰를 작성해주세요",
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        color = Color(0xff8D8D8D),
-                                        fontFamily = pretendard,
-                                        fontWeight = FontWeight.Bold
-                                    ),
+                            Text(
+                                text = "",
+                                modifier = Modifier.align(Alignment.Center),
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    fontFamily = pretendard,
+                                    fontWeight = FontWeight.Medium
                                 )
-                            }
-                            innerTextField()
+                            )
                         }
                     }
                 )
+            },
+            bottomBar = {
+                ConfirmBtn(
+                    text = "리뷰 남기기",
+                    enabled = true,
+                    onClick = {
+                        viewModel.postProductReview(
+                            productDetailData.idx,
+                            star,
+                            review
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                        .padding(horizontal = 16.dp)
+                )
+
+            }
+        ) { innerPadding ->
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(Color.White)
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(scrollState)
+                        .padding(horizontal = 16.dp)
+
+                ) {
 
 
-            }  //column
+                    GlideImage(
+                        imageModel = {
+                            productDetailData.productImg
+
+                        },
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .fillMaxWidth(0.41f)
+                            .aspectRatio(1f)
+                            .align(Alignment.CenterHorizontally),
+                    )
+
+                    Text(
+                        text = productDetailData.name,
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = pretendard
+                        ),
+                        modifier = Modifier.padding(top = 24.dp)
+                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        for (i in 1..star) {
+                            if (i != 1) Spacer(modifier = Modifier.padding(start = 4.dp))
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_fill_star),
+                                contentDescription = null,
+                                tint = Color(0xffFFD643),
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clickable(
+                                        interactionSource = MutableInteractionSource(),
+                                        indication = null
+                                    ) { star = i }
+                            )
+                        }
+
+                        for (i in 1..(5 - star)) {
+                            Spacer(modifier = Modifier.padding(start = 4.dp))
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_empty_star),
+                                contentDescription = null,
+                                tint = Color(0xffFFD643),
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clickable(
+                                        interactionSource = MutableInteractionSource(),
+                                        indication = null
+                                    ) {
+                                        star += i
+                                        Log.d("star", star.toString())
+                                    }
+
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
 
 
+                    BasicTextField(
+                        value = review, onValueChange = {
+                            review = it
+                        },
+                        textStyle = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = pretendard,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp),
+                        decorationBox = { innerTextField ->
+                            Box(
+                                modifier = Modifier
+                                    .background(Color(0xffffffff))
+                                    .border(1.dp, Color(0xffD1D1D1), RoundedCornerShape(8.dp))
+                                    .padding(16.dp)
+                            ) {
+                                if (review.isEmpty()) {
+                                    Text(
+                                        text = "리뷰를 작성해주세요",
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            color = Color(0xff8D8D8D),
+                                            fontFamily = pretendard,
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        }
+                    )
+
+
+                }  //column
+
+
+            }
+        }
+
+        if (reviewResponseState is APIResponse.Loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .pointerInput(Unit) {},
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(60.dp),
+                    color = Color.Black,
+                    trackColor = Color.White,
+                )
+            }
+            
         }
     }
 
