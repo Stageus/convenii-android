@@ -290,7 +290,7 @@ fun ReviewAddScreen(
                     trackColor = Color.White,
                 )
             }
-            
+
         }
     }
 

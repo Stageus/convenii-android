@@ -70,6 +70,7 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+
     fun resetIsEmailSend() {
         _isEmailSend.value = APIResponse.Empty()
     }

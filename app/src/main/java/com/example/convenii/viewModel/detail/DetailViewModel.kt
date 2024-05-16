@@ -66,7 +66,7 @@ class DetailViewModel @Inject constructor(
 
     fun getProductDetailData(
         productIdx: Int
-    ) {
+    ) { // 상품 상세 정보 가져오기
         viewModelScope.launch {
             _productDetailDataState.value = detailRepository.getDetailProduct(productIdx)
             if (_productDetailDataState.value is APIResponse.Success) {
@@ -81,9 +81,15 @@ class DetailViewModel @Inject constructor(
     }
 
     fun convertEventData(eventInfoData: List<ProductDetailModel.EventInfoData>): List<List<String>> {
+        if (eventInfoData == null) {
+            return listOf()
+        }
+
         val tableData = mutableListOf(
             listOf("", "GS25", "CU", "EMart24"),
         )
+        Log.d("DetailViewModel", "convertEventData: ${eventInfoData}")
+        Log.d("--------------------", "--------------------")
         for (data in eventInfoData) {
             val month = data.month.substring(data.month.length - 2) + "월"
             val rowData = mutableListOf(month)
@@ -91,6 +97,11 @@ class DetailViewModel @Inject constructor(
             // 각 회사별로 이벤트 처리
             val companies = listOf(1, 2, 3) // GS25, CU, Emart24의 companyIdx
             companies.forEach { companyIdx ->
+                Log.d("DetailViewModel", "convertEventData: ${data.events} ${data.month}")
+                if (data.events == null) {
+                    rowData.add("")
+                    return@forEach
+                }
                 val event = data.events.find { it.companyIdx == companyIdx }
                 val eventDescription = when (event?.eventIdx) {
                     1 -> "1+1"

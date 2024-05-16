@@ -1,11 +1,19 @@
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -100,7 +108,44 @@ fun BookmarkScreen(
         Box(modifier = Modifier.padding(innerPadding)) {
             if (bookmarkDataState.value is APIResponse.Success) {
                 if (bookmarkDataState.value.data!!.authStatus == "false") {
-                    Text(text = "로그인이 필요한 서비스입니다.")
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+
+                    ) {
+                        Text(text = "로그인이 필요한 서비스입니다.")
+                        Button(
+                            onClick = {
+                                navController.navigate("start") {
+                                    popUpTo(navController.graph.id) {
+                                        inclusive = true
+                                    }
+                                }
+                            },
+                            shape = RoundedCornerShape(12.dp),
+                            border = BorderStroke(1.dp, Color(0xFFE6E8EB)),
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = Color.Black,
+                                containerColor = Color.White
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                                .height(52.dp)
+                                .padding(horizontal = 16.dp)
+
+                        ) {
+
+                            Text(
+                                text = "로그인 하기",
+                                style = TextStyle(
+                                    fontSize = 18.sp
+                                ),
+                                fontFamily = pretendard
+                            )
+                        }
+                    }
                 } else {
                     LazyColumn(
                         modifier = Modifier

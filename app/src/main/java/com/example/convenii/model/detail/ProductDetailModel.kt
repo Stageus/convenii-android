@@ -30,7 +30,7 @@ class ProductDetailModel {
     )
 
     data class EventsData(
-        val companyIdx: Int?,
+        val companyIdx: Int,
         val eventIdx: Int,
         val price: String?
     )
